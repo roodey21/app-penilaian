@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart3, Users, ClipboardCheck, TrendingUp, Calendar, LogOut, Download, Plus, Search, Edit2, Trash2, X, Save, Eye, Mail, CheckCircle2, Power, Link, Award, ChevronRight, AlertCircle, ChevronLeft, FileText, ChevronDown, ChevronUp, GripVertical, Settings, Clock } from 'lucide-react';
+import { BarChart3, Users, ClipboardCheck, TrendingUp, Calendar, LogOut, Download, Plus, Search, Edit2, Trash2, X, Save, Eye, Mail, CheckCircle2, Award, FileText, ChevronDown, ChevronUp, GripVertical, Settings, Clock } from 'lucide-react';
 
 const LPPIntegratedDashboard = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -23,11 +23,11 @@ const LPPIntegratedDashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
+    <div className="flex h-screen overflow-hidden bg-gray-50">
+      <div className="flex flex-col w-64 bg-white border-r border-gray-200">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <img src="https://lpphotel.com/wp-content/uploads/2023/03/logo-lpp.png" alt="LPP" className="w-10 h-10 object-contain" />
+            <img src="https://lpphotel.com/wp-content/uploads/2023/03/logo-lpp.png" alt="LPP" className="object-contain w-10 h-10" />
             <div>
               <h1 className="text-sm font-bold text-gray-900">360° Best Employee Survey</h1>
               <p className="text-xs text-gray-500">LPP Hotel & MICE Group</p>
@@ -49,9 +49,9 @@ const LPPIntegratedDashboard = () => {
         </nav>
 
         <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-gray-50">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-sky-500 flex items-center justify-center">
-              <span className="text-white text-sm font-semibold">SA</span>
+          <div className="flex items-center px-4 py-3 space-x-3 rounded-lg bg-gray-50">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-sky-500">
+              <span className="text-sm font-semibold text-white">SA</span>
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-gray-900 truncate">Super Admin</p>
@@ -77,22 +77,22 @@ const DashboardHome = ({ setCurrentPage }) => {
 
   return (
     <div>
-      <div className="bg-white border-b border-gray-200 px-8 py-6">
+      <div className="px-8 py-6 bg-white border-b border-gray-200">
         <h2 className="text-2xl font-bold text-gray-900">Dashboard Overview</h2>
-        <p className="text-sm text-gray-500 mt-1">Monitoring survei 360° seluruh property</p>
+        <p className="mt-1 text-sm text-gray-500">Monitoring survei 360° seluruh property</p>
       </div>
       <div className="p-8 space-y-8">
         <div className="grid grid-cols-4 gap-6">
           {stats.map((stat, i) => {
             const Icon = stat.icon;
             return (
-              <div key={i} onClick={() => setCurrentPage(stat.page)} className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow cursor-pointer">
+              <div key={i} onClick={() => setCurrentPage(stat.page)} className="p-6 transition-shadow bg-white border border-gray-200 cursor-pointer rounded-xl hover:shadow-lg">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <p className="text-sm text-gray-500 font-medium">{stat.title}</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
+                    <p className="text-sm font-medium text-gray-500">{stat.title}</p>
+                    <p className="mt-2 text-3xl font-bold text-gray-900">{stat.value}</p>
                   </div>
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg">
+                  <div className="flex items-center justify-center w-12 h-12 shadow-lg rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600">
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                 </div>
@@ -100,8 +100,8 @@ const DashboardHome = ({ setCurrentPage }) => {
             );
           })}
         </div>
-        <div className="bg-white rounded-xl p-6 border border-gray-200">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
+        <div className="p-6 bg-white border border-gray-200 rounded-xl">
+          <h3 className="mb-4 text-lg font-bold text-gray-900">Quick Actions</h3>
           <div className="grid grid-cols-4 gap-4">
             {[
               { label: 'Add Employee', icon: Users, page: 'employees' },
@@ -111,8 +111,8 @@ const DashboardHome = ({ setCurrentPage }) => {
             ].map((action, i) => {
               const Icon = action.icon;
               return (
-                <button key={i} onClick={() => setCurrentPage(action.page)} className="p-4 rounded-lg border-2 border-dashed border-gray-200 hover:border-emerald-400 hover:bg-emerald-50 transition-all group">
-                  <Icon className="w-6 h-6 text-gray-400 group-hover:text-emerald-600 mx-auto mb-2" />
+                <button key={i} onClick={() => setCurrentPage(action.page)} className="p-4 transition-all border-2 border-gray-200 border-dashed rounded-lg hover:border-emerald-400 hover:bg-emerald-50 group">
+                  <Icon className="w-6 h-6 mx-auto mb-2 text-gray-400 group-hover:text-emerald-600" />
                   <p className="text-sm font-medium text-gray-600 group-hover:text-gray-900">{action.label}</p>
                 </button>
               );
@@ -162,7 +162,7 @@ const EmployeesPage = () => {
   };
 
   const handleDelete = (id) => {
-    if (confirm('Hapus karyawan?')) setEmployees(employees.filter(e => e.id !== id));
+    if (window.confirm('Hapus karyawan?')) setEmployees(employees.filter(e => e.id !== id));
   };
 
   const getLevelColor = (level) => {
@@ -175,13 +175,13 @@ const EmployeesPage = () => {
 
   return (
     <div>
-      <div className="bg-white border-b border-gray-200 px-8 py-6">
+      <div className="px-8 py-6 bg-white border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Employees Management</h2>
-            <p className="text-sm text-gray-500 mt-1">Kelola data karyawan seluruh property</p>
+            <p className="mt-1 text-sm text-gray-500">Kelola data karyawan seluruh property</p>
           </div>
-          <button onClick={handleAdd} className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg hover:shadow-lg flex items-center space-x-2">
+          <button onClick={handleAdd} className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-white rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg">
             <Plus className="w-4 h-4" /><span>Add Employee</span>
           </button>
         </div>
@@ -189,42 +189,42 @@ const EmployeesPage = () => {
 
       <div className="p-8 space-y-6">
         <div className="grid grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Total Karyawan</p>
-            <p className="text-3xl font-bold text-gray-900 mt-2">{employees.length}</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Total Karyawan</p>
+            <p className="mt-2 text-3xl font-bold text-gray-900">{employees.length}</p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Staff</p>
-            <p className="text-3xl font-bold text-sky-600 mt-2">{employees.filter(e => e.level === 'Staff').length}</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Staff</p>
+            <p className="mt-2 text-3xl font-bold text-sky-600">{employees.filter(e => e.level === 'Staff').length}</p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Leader</p>
-            <p className="text-3xl font-bold text-amber-600 mt-2">{employees.filter(e => e.level === 'Leader').length}</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Leader</p>
+            <p className="mt-2 text-3xl font-bold text-amber-600">{employees.filter(e => e.level === 'Leader').length}</p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">GM</p>
-            <p className="text-3xl font-bold text-purple-600 mt-2">{employees.filter(e => e.level === 'GM').length}</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">GM</p>
+            <p className="mt-2 text-3xl font-bold text-purple-600">{employees.filter(e => e.level === 'GM').length}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 rounded-xl">
           <div className="relative">
-            <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-            <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Cari nama atau email..." className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <Search className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+            <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Cari nama atau email..." className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="overflow-hidden bg-white border border-gray-200 rounded-xl">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="border-b border-gray-200 bg-gray-50">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Email</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Property</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Department</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Level</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Atasan</th>
-                <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase">Actions</th>
+                <th className="px-6 py-4 text-xs font-semibold text-left text-gray-600 uppercase">Name</th>
+                <th className="px-6 py-4 text-xs font-semibold text-left text-gray-600 uppercase">Email</th>
+                <th className="px-6 py-4 text-xs font-semibold text-left text-gray-600 uppercase">Property</th>
+                <th className="px-6 py-4 text-xs font-semibold text-left text-gray-600 uppercase">Department</th>
+                <th className="px-6 py-4 text-xs font-semibold text-left text-gray-600 uppercase">Level</th>
+                <th className="px-6 py-4 text-xs font-semibold text-left text-gray-600 uppercase">Atasan</th>
+                <th className="px-6 py-4 text-xs font-semibold text-right text-gray-600 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -232,8 +232,8 @@ const EmployeesPage = () => {
                 <tr key={emp.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-sky-500 flex items-center justify-center">
-                        <span className="text-white font-semibold text-sm">{emp.name.charAt(0)}</span>
+                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-sky-500">
+                        <span className="text-sm font-semibold text-white">{emp.name.charAt(0)}</span>
                       </div>
                       <span className="font-medium text-gray-900">{emp.name}</span>
                     </div>
@@ -247,10 +247,10 @@ const EmployeesPage = () => {
                   <td className="px-6 py-4 text-sm text-gray-600">{emp.supervisor || '-'}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end space-x-2">
-                      <button onClick={() => handleEdit(emp)} className="p-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors">
+                      <button onClick={() => handleEdit(emp)} className="p-2 text-gray-600 transition-colors rounded-lg hover:text-emerald-600 hover:bg-emerald-50">
                         <Edit2 className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleDelete(emp.id)} className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                      <button onClick={() => handleDelete(emp.id)} className="p-2 text-gray-600 transition-colors rounded-lg hover:text-red-600 hover:bg-red-50">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -263,36 +263,36 @@ const EmployeesPage = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
-          <div className="bg-white rounded-2xl max-w-2xl w-full p-8 max-h-screen overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black bg-opacity-50">
+          <div className="w-full max-w-2xl max-h-screen p-8 overflow-y-auto bg-white rounded-2xl">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-900">{modalMode === 'add' ? 'Add New Employee' : 'Edit Employee'}</h2>
-              <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 rounded-lg"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowModal(false)} className="p-2 rounded-lg hover:bg-gray-100"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Full Name</label>
                   <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Budi Santoso" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Email</label>
                   <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. budi@lpphotel.com" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Property</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Property</label>
                   <input type="text" value={formData.property} onChange={(e) => setFormData({...formData, property: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Select Property" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Department</label>
                   <input type="text" value={formData.department} onChange={(e) => setFormData({...formData, department: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Select Department" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Position Level</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Position Level</label>
                   <select value={formData.level} onChange={(e) => setFormData({...formData, level: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     <option value="Staff">Staff</option>
                     <option value="Leader">Leader</option>
@@ -300,15 +300,15 @@ const EmployeesPage = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Atasan</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Atasan</label>
                   <input type="text" value={formData.supervisor} onChange={(e) => setFormData({...formData, supervisor: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Ratna Sari" disabled={formData.level === 'GM'} />
-                  {formData.level === 'GM' && <p className="text-xs text-gray-500 mt-1">GM tidak memiliki atasan</p>}
+                  {formData.level === 'GM' && <p className="mt-1 text-xs text-gray-500">GM tidak memiliki atasan</p>}
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-3 mt-8">
-              <button onClick={() => setShowModal(false)} className="flex-1 px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
-              <button onClick={handleSave} className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg font-medium hover:shadow-lg flex items-center justify-center space-x-2">
+            <div className="flex items-center mt-8 space-x-3">
+              <button onClick={() => setShowModal(false)} className="flex-1 px-6 py-3 font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+              <button onClick={handleSave} className="flex items-center justify-center flex-1 px-6 py-3 space-x-2 font-medium text-white rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg">
                 <Save className="w-5 h-5" /><span>{modalMode === 'add' ? 'Add Employee' : 'Save Changes'}</span>
               </button>
             </div>
@@ -357,7 +357,7 @@ const ParametersPage = () => {
   };
 
   const handleDeletePillar = (pillarId) => {
-    if (confirm('Apakah Anda yakin ingin menghapus pillar ini beserta semua pertanyaannya?')) {
+    if (window.confirm('Apakah Anda yakin ingin menghapus pillar ini beserta semua pertanyaannya?')) {
       setPillars(pillars.filter(p => p.id !== pillarId));
     }
   };
@@ -386,7 +386,7 @@ const ParametersPage = () => {
   };
 
   const handleDeleteQuestion = (pillarId, questionId) => {
-    if (confirm('Apakah Anda yakin ingin menghapus pertanyaan ini?')) {
+    if (window.confirm('Apakah Anda yakin ingin menghapus pertanyaan ini?')) {
       setPillars(pillars.map(p => p.id === pillarId ? { ...p, questions: p.questions.filter(q => q.id !== questionId) } : p));
     }
   };
@@ -417,13 +417,13 @@ const ParametersPage = () => {
 
   return (
     <div>
-      <div className="bg-white border-b border-gray-200 px-8 py-6">
+      <div className="px-8 py-6 bg-white border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Parameters Management</h2>
-            <p className="text-sm text-gray-500 mt-1">Kelola pilar dan pertanyaan survey</p>
+            <p className="mt-1 text-sm text-gray-500">Kelola pilar dan pertanyaan survey</p>
           </div>
-          <button onClick={handleAddPillar} className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg hover:shadow-lg flex items-center space-x-2">
+          <button onClick={handleAddPillar} className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-white rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg">
             <Plus className="w-4 h-4" /><span>Add Pillar</span>
           </button>
         </div>
@@ -431,47 +431,47 @@ const ParametersPage = () => {
 
       <div className="p-8 space-y-4">
         <div className="grid grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Total Pillars</p>
-            <p className="text-3xl font-bold text-gray-900 mt-2">{pillars.length}</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Total Pillars</p>
+            <p className="mt-2 text-3xl font-bold text-gray-900">{pillars.length}</p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Total Questions</p>
-            <p className="text-3xl font-bold text-emerald-600 mt-2">{pillars.reduce((sum, p) => sum + p.questions.length, 0)}</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Total Questions</p>
+            <p className="mt-2 text-3xl font-bold text-emerald-600">{pillars.reduce((sum, p) => sum + p.questions.length, 0)}</p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Active Pillars</p>
-            <p className="text-3xl font-bold text-sky-600 mt-2">{pillars.filter(p => p.isActive).length}</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Active Pillars</p>
+            <p className="mt-2 text-3xl font-bold text-sky-600">{pillars.filter(p => p.isActive).length}</p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Customizations</p>
-            <p className="text-3xl font-bold text-amber-600 mt-2">0</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Customizations</p>
+            <p className="mt-2 text-3xl font-bold text-amber-600">0</p>
           </div>
         </div>
 
         {pillars.map((pillar) => (
-          <div key={pillar.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div key={pillar.id} className="overflow-hidden bg-white border border-gray-200 rounded-xl">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4 flex-1">
+                <div className="flex items-center flex-1 space-x-4">
                   <GripVertical className="w-5 h-5 text-gray-400 cursor-move" />
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
                       <h3 className="text-lg font-bold text-gray-900">{pillar.name}</h3>
-                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200">Active</span>
+                      <span className="px-3 py-1 text-xs font-semibold border rounded-full bg-emerald-100 text-emerald-700 border-emerald-200">Active</span>
                       <span className="text-sm text-gray-500">{pillar.questions.length} pertanyaan</span>
                     </div>
-                    <p className="text-sm text-gray-500 mt-1">{pillar.description}</p>
+                    <p className="mt-1 text-sm text-gray-500">{pillar.description}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <button onClick={() => handleEditPillar(pillar)} className="p-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors">
+                  <button onClick={() => handleEditPillar(pillar)} className="p-2 text-gray-600 transition-colors rounded-lg hover:text-emerald-600 hover:bg-emerald-50">
                     <Edit2 className="w-5 h-5" />
                   </button>
-                  <button onClick={() => handleDeletePillar(pillar.id)} className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                  <button onClick={() => handleDeletePillar(pillar.id)} className="p-2 text-gray-600 transition-colors rounded-lg hover:text-red-600 hover:bg-red-50">
                     <Trash2 className="w-5 h-5" />
                   </button>
-                  <button onClick={() => toggleExpand(pillar.id)} className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                  <button onClick={() => toggleExpand(pillar.id)} className="p-2 text-gray-600 rounded-lg hover:bg-gray-100">
                     {expanded.includes(pillar.id) ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                   </button>
                 </div>
@@ -481,12 +481,12 @@ const ParametersPage = () => {
               <div className="p-6 bg-gray-50">
                 <div className="space-y-3">
                   {pillar.questions.map((q, idx) => (
-                    <div key={q.id} className="bg-white rounded-lg p-4 border border-gray-200">
+                    <div key={q.id} className="p-4 bg-white border border-gray-200 rounded-lg">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3 flex-1">
+                        <div className="flex items-center flex-1 space-x-3">
                           <GripVertical className="w-4 h-4 text-gray-400 cursor-move" />
                           <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
+                            <div className="flex items-center mb-2 space-x-2">
                               <span className="text-xs font-semibold text-gray-400">Q{idx + 1}</span>
                               <span className="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-700">Active</span>
                             </div>
@@ -502,7 +502,7 @@ const ParametersPage = () => {
                     </div>
                   ))}
                 </div>
-                <button onClick={() => handleAddQuestion(pillar.id)} className="w-full mt-4 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all flex items-center justify-center space-x-2">
+                <button onClick={() => handleAddQuestion(pillar.id)} className="flex items-center justify-center w-full px-4 py-3 mt-4 space-x-2 text-sm font-medium text-gray-600 transition-all border-2 border-gray-300 border-dashed rounded-lg hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-50">
                   <Plus className="w-4 h-4" /><span>Add Question to this Pillar</span>
                 </button>
               </div>
@@ -512,25 +512,25 @@ const ParametersPage = () => {
       </div>
 
       {showPillarModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-8">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black bg-opacity-50">
+          <div className="w-full max-w-lg p-8 bg-white rounded-2xl">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold">{modalMode === 'add' ? 'Add New Pillar' : 'Edit Pillar'}</h2>
-              <button onClick={() => setShowPillarModal(false)} className="p-2 hover:bg-gray-100 rounded-lg"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowPillarModal(false)} className="p-2 rounded-lg hover:bg-gray-100"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Pillar Name</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Pillar Name</label>
                 <input type="text" value={pillarFormData.name} onChange={(e) => setPillarFormData({...pillarFormData, name: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Leadership & Initiative" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                <textarea value={pillarFormData.description} onChange={(e) => setPillarFormData({...pillarFormData, description: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 h-24" placeholder="Describe this pillar..." />
+                <label className="block mb-2 text-sm font-medium text-gray-700">Description</label>
+                <textarea value={pillarFormData.description} onChange={(e) => setPillarFormData({...pillarFormData, description: e.target.value})} className="w-full h-24 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500" placeholder="Describe this pillar..." />
               </div>
             </div>
-            <div className="flex space-x-3 mt-6">
+            <div className="flex mt-6 space-x-3">
               <button onClick={() => setShowPillarModal(false)} className="flex-1 px-6 py-3 border rounded-lg">Cancel</button>
-              <button onClick={handleSavePillar} className="flex-1 px-6 py-3 bg-emerald-600 text-white rounded-lg flex items-center justify-center space-x-2">
+              <button onClick={handleSavePillar} className="flex items-center justify-center flex-1 px-6 py-3 space-x-2 text-white rounded-lg bg-emerald-600">
                 <Save className="w-5 h-5" /><span>{modalMode === 'add' ? 'Add Pillar' : 'Save Changes'}</span>
               </button>
             </div>
@@ -539,19 +539,19 @@ const ParametersPage = () => {
       )}
 
       {showQuestionModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-8">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black bg-opacity-50">
+          <div className="w-full max-w-lg p-8 bg-white rounded-2xl">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold">{modalMode === 'add' ? 'Add New Question' : 'Edit Question'}</h2>
-              <button onClick={() => setShowQuestionModal(false)} className="p-2 hover:bg-gray-100 rounded-lg"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowQuestionModal(false)} className="p-2 rounded-lg hover:bg-gray-100"><X className="w-5 h-5" /></button>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Question Text</label>
-              <textarea value={questionFormData.text} onChange={(e) => setQuestionFormData({...questionFormData, text: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 h-24" placeholder="e.g. Mampu mengambil inisiatif tanpa diminta" />
+              <label className="block mb-2 text-sm font-medium text-gray-700">Question Text</label>
+              <textarea value={questionFormData.text} onChange={(e) => setQuestionFormData({...questionFormData, text: e.target.value})} className="w-full h-24 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Mampu mengambil inisiatif tanpa diminta" />
             </div>
-            <div className="flex space-x-3 mt-6">
+            <div className="flex mt-6 space-x-3">
               <button onClick={() => setShowQuestionModal(false)} className="flex-1 px-6 py-3 border rounded-lg">Cancel</button>
-              <button onClick={handleSaveQuestion} className="flex-1 px-6 py-3 bg-emerald-600 text-white rounded-lg flex items-center justify-center space-x-2">
+              <button onClick={handleSaveQuestion} className="flex items-center justify-center flex-1 px-6 py-3 space-x-2 text-white rounded-lg bg-emerald-600">
                 <Save className="w-5 h-5" /><span>{modalMode === 'add' ? 'Add Question' : 'Save Changes'}</span>
               </button>
             </div>
@@ -586,13 +586,13 @@ const PeriodsPage = () => {
 
   return (
     <div>
-      <div className="bg-white border-b border-gray-200 px-8 py-6">
+      <div className="px-8 py-6 bg-white border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Survey Period Management</h2>
-            <p className="text-sm text-gray-500 mt-1">Kelola periode survey dan monitor progress</p>
+            <p className="mt-1 text-sm text-gray-500">Kelola periode survey dan monitor progress</p>
           </div>
-          <button onClick={() => setShowModal(true)} className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg hover:shadow-lg flex items-center space-x-2">
+          <button onClick={() => setShowModal(true)} className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-white rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg">
             <Plus className="w-4 h-4" /><span>Create Period</span>
           </button>
         </div>
@@ -600,17 +600,17 @@ const PeriodsPage = () => {
 
       <div className="p-8 space-y-6">
         <div className="grid grid-cols-3 gap-6">
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Total Periods</p>
-            <p className="text-3xl font-bold text-gray-900 mt-2">{periods.length}</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Total Periods</p>
+            <p className="mt-2 text-3xl font-bold text-gray-900">{periods.length}</p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Active Period</p>
-            <p className="text-3xl font-bold text-emerald-600 mt-2">{periods.filter(p => p.isActive).length}</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Active Period</p>
+            <p className="mt-2 text-3xl font-bold text-emerald-600">{periods.filter(p => p.isActive).length}</p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Completion Rate</p>
-            <p className="text-3xl font-bold text-sky-600 mt-2">{periods.find(p => p.isActive) ? Math.round((periods.find(p => p.isActive).completed / periods.find(p => p.isActive).total) * 100) : 0}%</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Completion Rate</p>
+            <p className="mt-2 text-3xl font-bold text-sky-600">{periods.find(p => p.isActive) ? Math.round((periods.find(p => p.isActive).completed / periods.find(p => p.isActive).total) * 100) : 0}%</p>
           </div>
         </div>
 
@@ -620,30 +620,30 @@ const PeriodsPage = () => {
           const completionPercentage = Math.round((period.completed / period.total) * 100);
 
           return (
-            <div key={period.id} className="bg-white rounded-xl border border-gray-200 p-6">
+            <div key={period.id} className="p-6 bg-white border border-gray-200 rounded-xl">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <div className="flex items-center space-x-3 mb-2">
+                  <div className="flex items-center mb-2 space-x-3">
                     <h3 className="text-xl font-bold text-gray-900">{period.name}</h3>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold border flex items-center space-x-1 ${statusBadge.bg}`}>
                       <StatusIcon className="w-3 h-3" /><span>{statusBadge.label}</span>
                     </span>
-                    {period.isActive && <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg">Currently Active</span>}
+                    {period.isActive && <span className="px-3 py-1 text-xs font-semibold text-white rounded-full shadow-lg bg-gradient-to-r from-emerald-500 to-emerald-600">Currently Active</span>}
                   </div>
                   <p className="text-sm text-gray-500">{period.completed}/{period.total} completed</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   {period.status === 'active' && (
-                    <button onClick={() => alert('Send reminder')} className="px-4 py-2 bg-amber-50 text-amber-700 rounded-lg text-sm font-medium hover:bg-amber-100 flex items-center space-x-2">
+                    <button onClick={() => alert('Send reminder')} className="flex items-center px-4 py-2 space-x-2 text-sm font-medium rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100">
                       <Mail className="w-4 h-4" /><span>Send Reminder</span>
                     </button>
                   )}
-                  <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"><Edit2 className="w-5 h-5" /></button>
-                  <button className="p-2 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-lg" disabled={period.isActive}><Trash2 className="w-5 h-5" /></button>
+                  <button className="p-2 text-gray-600 rounded-lg hover:bg-gray-100"><Edit2 className="w-5 h-5" /></button>
+                  <button className="p-2 text-gray-600 rounded-lg hover:bg-red-50 hover:text-red-600" disabled={period.isActive}><Trash2 className="w-5 h-5" /></button>
                 </div>
               </div>
               {period.status === 'active' && (
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="w-full h-2 overflow-hidden bg-gray-200 rounded-full">
                   <div className="h-full bg-gradient-to-r from-emerald-500 to-emerald-600" style={{ width: `${completionPercentage}%` }} />
                 </div>
               )}
@@ -653,28 +653,28 @@ const PeriodsPage = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-8">
-            <h2 className="text-2xl font-bold mb-6">Create New Period</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black bg-opacity-50">
+          <div className="w-full max-w-lg p-8 bg-white rounded-2xl">
+            <h2 className="mb-6 text-2xl font-bold">Create New Period</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Period Name</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Period Name</label>
                 <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Semester 1 - 2025" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Start Date</label>
                   <input type="date" value={formData.startDate} onChange={(e) => setFormData({...formData, startDate: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">End Date</label>
                   <input type="date" value={formData.endDate} onChange={(e) => setFormData({...formData, endDate: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500" />
                 </div>
               </div>
             </div>
-            <div className="flex space-x-3 mt-6">
+            <div className="flex mt-6 space-x-3">
               <button onClick={() => setShowModal(false)} className="flex-1 px-6 py-3 border rounded-lg">Cancel</button>
-              <button onClick={handleCreate} className="flex-1 px-6 py-3 bg-emerald-600 text-white rounded-lg">Create</button>
+              <button onClick={handleCreate} className="flex-1 px-6 py-3 text-white rounded-lg bg-emerald-600">Create</button>
             </div>
           </div>
         </div>
@@ -709,17 +709,17 @@ const ReportsPage = () => {
 
   return (
     <div>
-      <div className="bg-white border-b border-gray-200 px-8 py-6">
+      <div className="px-8 py-6 bg-white border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Reports & NPS Rankings</h2>
-            <p className="text-sm text-gray-500 mt-1">Hasil survey periode Semester 2 2024</p>
+            <p className="mt-1 text-sm text-gray-500">Hasil survey periode Semester 2 2024</p>
           </div>
           <div className="flex items-center space-x-3">
-            <button onClick={() => alert('Export PDF')} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center space-x-2">
+            <button onClick={() => alert('Export PDF')} className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
               <FileText className="w-4 h-4" /><span>Export PDF</span>
             </button>
-            <button onClick={() => alert('Export Excel')} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center space-x-2">
+            <button onClick={() => alert('Export Excel')} className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
               <Download className="w-4 h-4" /><span>Export Excel</span>
             </button>
           </div>
@@ -728,29 +728,29 @@ const ReportsPage = () => {
 
       <div className="p-8 space-y-8">
         <div className="grid grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Average NPS Score</p>
-            <p className="text-3xl font-bold text-emerald-600 mt-2">52%</p>
-            <p className="text-xs text-gray-400 mt-1">Across all employees</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Average NPS Score</p>
+            <p className="mt-2 text-3xl font-bold text-emerald-600">52%</p>
+            <p className="mt-1 text-xs text-gray-400">Across all employees</p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Total Promoters</p>
-            <p className="text-3xl font-bold text-emerald-600 mt-2">156</p>
-            <p className="text-xs text-gray-400 mt-1">Score 9-10</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Total Promoters</p>
+            <p className="mt-2 text-3xl font-bold text-emerald-600">156</p>
+            <p className="mt-1 text-xs text-gray-400">Score 9-10</p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Total Passives</p>
-            <p className="text-3xl font-bold text-amber-600 mt-2">68</p>
-            <p className="text-xs text-gray-400 mt-1">Score 7-8</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Total Passives</p>
+            <p className="mt-2 text-3xl font-bold text-amber-600">68</p>
+            <p className="mt-1 text-xs text-gray-400">Score 7-8</p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-500 font-medium">Total Detractors</p>
-            <p className="text-3xl font-bold text-sky-600 mt-2">23</p>
-            <p className="text-xs text-gray-400 mt-1">Score 1-6</p>
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <p className="text-sm font-medium text-gray-500">Total Detractors</p>
+            <p className="mt-2 text-3xl font-bold text-sky-600">23</p>
+            <p className="mt-1 text-xs text-gray-400">Score 1-6</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200">
+        <div className="bg-white border border-gray-200 rounded-xl">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center space-x-2">
               <button onClick={() => setSelectedLevel('Staff')} className={`px-6 py-2.5 rounded-lg font-medium text-sm transition-all ${selectedLevel === 'Staff' ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
@@ -768,9 +768,9 @@ const ReportsPage = () => {
               const nps = calculateNPS(employee.promoters, employee.detractors, employee.total);
               
               return (
-                <div key={employee.id} className="p-6 hover:bg-gray-50 transition-colors">
+                <div key={employee.id} className="p-6 transition-colors hover:bg-gray-50">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4 flex-1">
+                    <div className="flex items-center flex-1 space-x-4">
                       <div className={`w-12 h-12 rounded-xl ${rankBadge.bg} flex items-center justify-center text-white font-bold shadow-lg`}>
                         {typeof rankBadge.icon === 'string' && rankBadge.icon.includes('🥇') ? (
                           <span className="text-2xl">{rankBadge.icon}</span>
@@ -779,9 +779,9 @@ const ReportsPage = () => {
                         )}
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-1">
+                        <div className="flex items-center mb-1 space-x-3">
                           <h3 className="text-lg font-bold text-gray-900">{employee.name}</h3>
-                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200">Excellent</span>
+                          <span className="px-3 py-1 text-xs font-semibold border rounded-full bg-emerald-100 text-emerald-700 border-emerald-200">Excellent</span>
                         </div>
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <span>{employee.property}</span>
@@ -796,33 +796,33 @@ const ReportsPage = () => {
                     <div className="flex items-center space-x-6">
                       <div className="text-center">
                         <p className="text-4xl font-bold text-emerald-600">{nps}%</p>
-                        <p className="text-xs text-gray-500 mt-1">NPS Score</p>
+                        <p className="mt-1 text-xs text-gray-500">NPS Score</p>
                       </div>
 
                       <div className="w-px h-12 bg-gray-200"></div>
 
                       <div className="flex items-center space-x-4">
                         <div className="text-center">
-                          <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center mb-1">
+                          <div className="flex items-center justify-center w-12 h-12 mb-1 rounded-lg bg-emerald-100">
                             <span className="text-lg font-bold text-emerald-600">{employee.promoters}</span>
                           </div>
                           <p className="text-xs text-gray-500">Promoters</p>
                         </div>
                         <div className="text-center">
-                          <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center mb-1">
+                          <div className="flex items-center justify-center w-12 h-12 mb-1 rounded-lg bg-amber-100">
                             <span className="text-lg font-bold text-amber-600">{employee.passives}</span>
                           </div>
                           <p className="text-xs text-gray-500">Passives</p>
                         </div>
                         <div className="text-center">
-                          <div className="w-12 h-12 rounded-lg bg-sky-100 flex items-center justify-center mb-1">
+                          <div className="flex items-center justify-center w-12 h-12 mb-1 rounded-lg bg-sky-100">
                             <span className="text-lg font-bold text-sky-600">{employee.detractors}</span>
                           </div>
                           <p className="text-xs text-gray-500">Detractors</p>
                         </div>
                       </div>
 
-                      <button onClick={() => alert('View detail')} className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg font-medium hover:shadow-lg flex items-center space-x-2">
+                      <button onClick={() => alert('View detail')} className="flex items-center px-4 py-2 space-x-2 font-medium text-white rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg">
                         <Eye className="w-4 h-4" /><span>Detail</span>
                       </button>
                     </div>

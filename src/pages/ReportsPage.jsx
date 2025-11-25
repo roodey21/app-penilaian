@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FileText, Download, Users, Award, Eye } from 'lucide-react';
 import PageHeader from '../components/layout/PageHeader';
 import StatCard from '../components/common/StatCard';
+import Button from '../components/ui/Button';
 import { calculateNPS, getRankBadge } from '../utils/helpers';
 
 const ReportsPage = () => {
@@ -27,20 +28,12 @@ const ReportsPage = () => {
         subtitle="Hasil survey periode Semester 2 2024"
         actions={
           <>
-            <button 
-              onClick={() => alert('Export PDF')} 
-              className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
-              <FileText className="w-4 h-4" />
-              <span>Export PDF</span>
-            </button>
-            <button 
-              onClick={() => alert('Export Excel')} 
-              className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
-              <Download className="w-4 h-4" />
-              <span>Export Excel</span>
-            </button>
+            <Button variant="ghost" onClick={() => alert('Export PDF')}>
+              <FileText className="w-4 h-4 mr-2" /> Export PDF
+            </Button>
+            <Button variant="ghost" onClick={() => alert('Export Excel')}>
+              <Download className="w-4 h-4 mr-2" /> Export Excel
+            </Button>
           </>
         }
       />
@@ -71,33 +64,13 @@ const ReportsPage = () => {
 
         <div className="bg-white border border-gray-200 rounded-xl">
           <div className="p-6 border-b border-gray-200">
-            <div className="flex items-center space-x-2">
-              <button 
-                onClick={() => setSelectedLevel('Staff')} 
-                className={`px-6 py-2.5 rounded-lg font-medium text-sm transition-all ${
-                  selectedLevel === 'Staff' 
-                    ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg' 
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <Users className="w-4 h-4" />
-                  <span>Staff Ranking</span>
-                </div>
-              </button>
-              <button 
-                onClick={() => setSelectedLevel('Leader')} 
-                className={`px-6 py-2.5 rounded-lg font-medium text-sm transition-all ${
-                  selectedLevel === 'Leader' 
-                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-lg' 
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <Award className="w-4 h-4" />
-                  <span>Leader Ranking</span>
-                </div>
-              </button>
+            <div className="flex gap-2">
+              <Button variant={selectedLevel === 'Staff' ? 'primary' : 'ghost'} onClick={() => setSelectedLevel('Staff')}>
+                <Users className="w-4 h-4 mr-2" /> Staff Ranking
+              </Button>
+              <Button variant={selectedLevel === 'Leader' ? 'primary' : 'ghost'} onClick={() => setSelectedLevel('Leader')}>
+                <Award className="w-4 h-4 mr-2" /> Leader Ranking
+              </Button>
             </div>
           </div>
 
@@ -163,13 +136,9 @@ const ReportsPage = () => {
                         </div>
                       </div>
 
-                      <button 
-                        onClick={() => alert('View detail')} 
-                        className="flex items-center px-4 py-2 space-x-2 font-medium text-white rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg"
-                      >
-                        <Eye className="w-4 h-4" />
-                        <span>Detail</span>
-                      </button>
+                      <Button variant="primary" onClick={() => alert('View detail')}>
+                        <Eye className="w-4 h-4 mr-2" /> Detail
+                      </Button>
                     </div>
                   </div>
                 </div>

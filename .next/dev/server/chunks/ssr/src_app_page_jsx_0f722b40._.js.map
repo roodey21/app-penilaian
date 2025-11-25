@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/projects/app-penilaian/src/app/page.jsx"],"sourcesContent":["\"use client\";\r\nimport React from 'react';\r\nimport { useRouter } from 'next/navigation';\r\nimport Homepage from '../../pages/Homepage';\r\n\r\nexport default function Page() {\r\n  const router = useRouter();\r\n  const setCurrentPage = (p) => {\r\n    const route = p === 'dashboard' ? '/' : `/${p}`;\r\n    router.push(route);\r\n  };\r\n\r\n  return (\r\n    <div>\r\n      <Homepage setCurrentPage={setCurrentPage} />\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;AACA;AACA;;;;;;AAFA;;;;;AAKe,SAAS;IACtB,MAAM,SAAS,IAAA,+IAAS;IACxB,MAAM,iBAAiB,CAAC;QACtB,MAAM,QAAQ,MAAM,cAAc,MAAM,CAAC,CAAC,EAAE,GAAG;QAC/C,OAAO,IAAI,CAAC;IACd;IAEA,qBACE,8OAAC;kBACC,cAAA,8OAAC;YAAS,gBAAgB;;;;;;;;;;;AAGhC"}}]
+}

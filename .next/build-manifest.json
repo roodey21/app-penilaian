@@ -1,0 +1,64 @@
+{
+  "pages": {
+    "/AssessmentPage": [
+      "static/chunks/c1ff375c8faee66d.js",
+      "static/chunks/f2dbd188a86fa9df.js",
+      "static/chunks/turbopack-d2329d86f69ac2e8.js"
+    ],
+    "/DashboardHome": [
+      "static/chunks/802c27c59f4dd4df.js",
+      "static/chunks/f2dbd188a86fa9df.js",
+      "static/chunks/turbopack-3029238275d76c54.js"
+    ],
+    "/EmployeesPage": [
+      "static/chunks/3003d3c9a9be5492.js",
+      "static/chunks/f2dbd188a86fa9df.js",
+      "static/chunks/turbopack-b24084a099489b22.js"
+    ],
+    "/Homepage": [
+      "static/chunks/c8a7020b3948b689.js",
+      "static/chunks/f2dbd188a86fa9df.js",
+      "static/chunks/turbopack-9a1ab3d74f98ca4d.js"
+    ],
+    "/ParametersPage": [
+      "static/chunks/b4ffb21e2227ff37.js",
+      "static/chunks/f2dbd188a86fa9df.js",
+      "static/chunks/turbopack-991437fc9f1c9916.js"
+    ],
+    "/PeriodsPage": [
+      "static/chunks/ca80ae97fdbafa7d.js",
+      "static/chunks/f2dbd188a86fa9df.js",
+      "static/chunks/turbopack-f34b2bb7773479de.js"
+    ],
+    "/ReportsPage": [
+      "static/chunks/dc94924994e530b2.js",
+      "static/chunks/f2dbd188a86fa9df.js",
+      "static/chunks/turbopack-44dd46e04bf97a3a.js"
+    ],
+    "/_app": [
+      "static/chunks/02c089623801f20e.js",
+      "static/chunks/f2dbd188a86fa9df.js",
+      "static/chunks/turbopack-d2b8cbaf5c1e7d20.js"
+    ],
+    "/_error": [
+      "static/chunks/32e5135147a8941c.js",
+      "static/chunks/f2dbd188a86fa9df.js",
+      "static/chunks/turbopack-8a5f9afb7d0db61b.js"
+    ]
+  },
+  "devFiles": [],
+  "polyfillFiles": [
+    "static/chunks/a6dad97d9634a72d.js"
+  ],
+  "lowPriorityFiles": [
+    "static/TQfm3j6Kv-7CjvuVkgdeZ/_ssgManifest.js",
+    "static/TQfm3j6Kv-7CjvuVkgdeZ/_buildManifest.js"
+  ],
+  "rootMainFiles": [
+    "static/chunks/6cc39c6e92955998.js",
+    "static/chunks/a998b13c79e86498.js",
+    "static/chunks/1d3dacd3bd1bbd62.js",
+    "static/chunks/fdbd2ed62c97d73d.js",
+    "static/chunks/turbopack-2faac20ba85037c4.js"
+  ]
+}

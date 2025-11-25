@@ -2,8 +2,13 @@ import React, { useState } from 'react';
 import { ClipboardList, Users, CheckCircle, AlertCircle, Eye, TrendingUp, Calendar } from 'lucide-react';
 import PageHeader from '../components/layout/PageHeader';
 import StatCard from '../components/common/StatCard';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
+import Progress from '../components/ui/Progress';
 import { getAssessmentTargets, getAssessmentCategory, calculateTotalAssessments, getAssessmentProgress } from '../utils/assessmentFlow';
 import { assessmentCategories } from '../constants/organizationStructure';
+import Modal from '../components/common/Modal';
 
 const AssessmentPage = () => {
   // Sample data - should come from API/state management
@@ -63,40 +68,39 @@ const AssessmentPage = () => {
 
       <div className="p-8 space-y-8">
         {/* Progress Overview */}
-        <div className="p-6 border border-gray-200 bg-gradient-to-r from-emerald-50 to-sky-50 rounded-xl">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-lg font-bold text-gray-900">Assessment Progress</h3>
-              <p className="text-sm text-gray-600">Periode: Semester 2 - 2024</p>
+        <Card className="shadow-sm">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <h3 className="text-lg font-bold">Assessment Progress</h3>
+                <p className="text-sm text-base-content/60">Periode: Semester 2 - 2024</p>
+              </div>
+              <div className="text-right">
+                <p className="text-4xl font-bold text-emerald-600">{progress.percentage}%</p>
+                <p className="text-sm text-base-content/60">Completed</p>
+              </div>
             </div>
-            <div className="text-right">
-              <p className="text-4xl font-bold text-emerald-600">{progress.percentage}%</p>
-              <p className="text-sm text-gray-500">Completed</p>
+
+            <Progress value={progress.percentage} />
+
+            <div className="flex items-center justify-between mt-3">
+              <p className="text-sm text-base-content/60">
+                {progress.completed} dari {progress.total} penilaian selesai
+              </p>
+              {progress.isComplete ? (
+                <Badge variant="success" className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4" />
+                  Complete
+                </Badge>
+              ) : (
+                <Badge variant="warning" className="flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  {progress.remaining} tersisa
+                </Badge>
+              )}
             </div>
           </div>
-          <div className="w-full h-3 overflow-hidden bg-gray-200 rounded-full">
-            <div 
-              className="h-full transition-all bg-gradient-to-r from-emerald-500 to-emerald-600" 
-              style={{ width: `${progress.percentage}%` }}
-            />
-          </div>
-          <div className="flex items-center justify-between mt-3">
-            <p className="text-sm text-gray-600">
-              {progress.completed} dari {progress.total} penilaian selesai
-            </p>
-            {progress.isComplete ? (
-              <span className="flex items-center px-3 py-1 space-x-1 text-xs font-semibold text-green-700 bg-green-100 border border-green-200 rounded-full">
-                <CheckCircle className="w-4 h-4" />
-                <span>Complete</span>
-              </span>
-            ) : (
-              <span className="flex items-center px-3 py-1 space-x-1 text-xs font-semibold text-amber-700 bg-amber-100 border border-amber-200 rounded-full">
-                <AlertCircle className="w-4 h-4" />
-                <span>{progress.remaining} tersisa</span>
-              </span>
-            )}
-          </div>
-        </div>
+        </Card>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-4 gap-6">
@@ -163,34 +167,28 @@ const AssessmentPage = () => {
               const isCompleted = completedAssessments.includes(target.id);
 
               return (
-                <div key={index} className="p-6 transition-colors hover:bg-gray-50">
+                <div key={index} className="p-4 rounded-lg hover:bg-gray-50">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center flex-1 space-x-4">
                       {/* Status Icon */}
-                      <div className={`flex items-center justify-center w-12 h-12 rounded-full ${
-                        isCompleted ? 'bg-emerald-100' : 'bg-gray-100'
-                      }`}>
+                      <div className={`flex items-center justify-center w-12 h-12 rounded-full ${isCompleted ? 'bg-green-100' : 'bg-gray-100'}`}>
                         {isCompleted ? (
-                          <CheckCircle className="w-6 h-6 text-emerald-600" />
+                          <CheckCircle className="w-6 h-6 text-success" />
                         ) : (
-                          <AlertCircle className="w-6 h-6 text-gray-400" />
+                          <AlertCircle className="w-6 h-6 text-base-content/60" />
                         )}
                       </div>
 
                       {/* Employee Info */}
                       <div className="flex-1">
                         <div className="flex items-center mb-1 space-x-3">
-                          <h4 className="text-lg font-bold text-gray-900">{target.name}</h4>
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${categoryInfo.color}`}>
-                            {categoryInfo.name}
-                          </span>
+                          <h4 className="text-lg font-bold">{target.name}</h4>
+                          <Badge className={categoryInfo.color ? categoryInfo.color : ''}>{categoryInfo.name}</Badge>
                           {isCompleted && (
-                            <span className="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 border border-green-200 rounded">
-                              Selesai
-                            </span>
+                            <Badge variant="success">Selesai</Badge>
                           )}
                         </div>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                        <div className="flex items-center space-x-4 text-sm text-base-content/60">
                           <span>{target.position}</span>
                           <span>•</span>
                           <span>{target.department}</span>
@@ -202,30 +200,18 @@ const AssessmentPage = () => {
 
                     {/* Actions */}
                     <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => handleViewDetail(target)}
-                        className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-                      >
-                        <Eye className="w-4 h-4" />
-                        <span>Detail</span>
-                      </button>
+                      <Button variant="ghost" size="sm" onClick={() => handleViewDetail(target)}>
+                        <Eye className="w-4 h-4 mr-2" /> Detail
+                      </Button>
                       {!isCompleted && (
-                        <button
-                          onClick={() => handleStartAssessment(target)}
-                          className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-white rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg"
-                        >
-                          <ClipboardList className="w-4 h-4" />
-                          <span>Mulai Penilaian</span>
-                        </button>
+                        <Button variant="primary" size="sm" onClick={() => handleStartAssessment(target)}>
+                          <ClipboardList className="w-4 h-4 mr-2" /> Mulai Penilaian
+                        </Button>
                       )}
                       {isCompleted && (
-                        <button
-                          onClick={() => handleStartAssessment(target)}
-                          className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-                        >
-                          <Eye className="w-4 h-4" />
-                          <span>Lihat Hasil</span>
-                        </button>
+                        <Button variant="outline" size="sm" onClick={() => handleStartAssessment(target)}>
+                          <Eye className="w-4 h-4 mr-2" /> Lihat Hasil
+                        </Button>
                       )}
                     </div>
                   </div>
@@ -284,76 +270,62 @@ const AssessmentPage = () => {
       </div>
 
       {/* Detail Modal */}
-      {showDetailModal && selectedEmployee && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black bg-opacity-50">
-          <div className="w-full max-w-2xl p-8 bg-white rounded-2xl">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Detail Karyawan</h2>
-              <button 
-                onClick={() => setShowDetailModal(false)}
-                className="p-2 rounded-lg hover:bg-gray-100"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Nama</p>
-                    <p className="mt-1 text-base font-semibold text-gray-900">{selectedEmployee.name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Posisi</p>
-                    <p className="mt-1 text-base font-semibold text-gray-900">{selectedEmployee.position}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Department</p>
-                    <p className="mt-1 text-base text-gray-900">{selectedEmployee.department}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Property</p>
-                    <p className="mt-1 text-base text-gray-900">{selectedEmployee.property}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Level</p>
-                    <p className="mt-1 text-base text-gray-900">{selectedEmployee.level}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Email</p>
-                    <p className="mt-1 text-base text-gray-900">{selectedEmployee.email}</p>
-                  </div>
-                </div>
+      <Modal
+        isOpen={showDetailModal && !!selectedEmployee}
+        onClose={() => setShowDetailModal(false)}
+        title={selectedEmployee ? 'Detail Karyawan' : ''}
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setShowDetailModal(false)}>Tutup</Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                setShowDetailModal(false);
+                handleStartAssessment(selectedEmployee);
+              }}
+            >
+              Mulai Penilaian
+            </Button>
+          </>
+        }
+      >
+        {selectedEmployee && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-base-content/60">Nama</p>
+                <p className="mt-1 font-semibold">{selectedEmployee.name}</p>
               </div>
-
-              <div className="p-4 border-l-4 border-emerald-500 bg-emerald-50 rounded-lg">
-                <p className="text-sm font-medium text-gray-700">
-                  Kategori Penilaian: <span className="font-bold">{getCategoryInfo(selectedEmployee.category).name}</span>
-                </p>
+              <div>
+                <p className="text-sm text-base-content/60">Posisi</p>
+                <p className="mt-1 font-semibold">{selectedEmployee.position}</p>
+              </div>
+              <div>
+                <p className="text-sm text-base-content/60">Department</p>
+                <p className="mt-1">{selectedEmployee.department}</p>
+              </div>
+              <div>
+                <p className="text-sm text-base-content/60">Property</p>
+                <p className="mt-1">{selectedEmployee.property}</p>
+              </div>
+              <div>
+                <p className="text-sm text-base-content/60">Level</p>
+                <p className="mt-1">{selectedEmployee.level}</p>
+              </div>
+              <div>
+                <p className="text-sm text-base-content/60">Email</p>
+                <p className="mt-1">{selectedEmployee.email}</p>
               </div>
             </div>
 
-            <div className="flex mt-6 space-x-3">
-              <button 
-                onClick={() => setShowDetailModal(false)}
-                className="flex-1 px-6 py-3 font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                Tutup
-              </button>
-              <button 
-                onClick={() => {
-                  setShowDetailModal(false);
-                  handleStartAssessment(selectedEmployee);
-                }}
-                className="flex-1 px-6 py-3 font-medium text-white rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg"
-              >
-                Mulai Penilaian
-              </button>
+            <div className="p-4 bg-gray-100 rounded-lg">
+              <p className="text-sm">
+                Kategori Penilaian: <strong>{getCategoryInfo(selectedEmployee.category).name}</strong>
+              </p>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   );
 };

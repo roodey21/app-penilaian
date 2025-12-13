@@ -1,45 +1,59 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ClipboardList, Users, CheckCircle, AlertCircle, Eye, TrendingUp, Calendar } from 'lucide-react';
 import PageHeader from '../components/layout/PageHeader';
 import StatCard from '../components/common/StatCard';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
-import Progress from '../components/ui/Progress';
-import { getAssessmentTargets, getAssessmentCategory, calculateTotalAssessments, getAssessmentProgress } from '../utils/assessmentFlow';
+// Progress removed per new API design
+import { derivePeriodId } from '../utils/assessmentAdapter';
+import { useRouter } from 'next/navigation';
 import { assessmentCategories } from '../constants/organizationStructure';
 import Modal from '../components/common/Modal';
+import { getActivePeriod, getAssessmentGroupMapping } from '../services/assessmentService';
 
 const AssessmentPage = () => {
   // Sample data - should come from API/state management
-  const [employees] = useState([
-    { id: 1, name: 'Budi Santoso', email: 'budi@lpphotel.com', property: 'LPP Garden Hotel', department: 'Front Office Department', level: 'Staff', position: 'FO Staff' },
-    { id: 2, name: 'Siti Aminah', email: 'siti@lpphotel.com', property: 'LPP Garden Hotel', department: 'Front Office Department', level: 'Staff', position: 'FO Staff' },
-    { id: 3, name: 'Ratna Sari', email: 'ratna@lpphotel.com', property: 'LPP Garden Hotel', department: 'Front Office Department', level: 'Leader', position: 'FO Supervisor' },
-    { id: 4, name: 'Ahmad Rifki', email: 'ahmad@lpphotel.com', property: 'LPP Garden Hotel', department: 'Housekeeping Department', level: 'Leader', position: 'HK Supervisor' },
-    { id: 5, name: 'Dewi Lestari', email: 'dewi@lpphotel.com', property: 'LPP Hotel Group', department: 'HRD Department', level: 'Managerial', position: 'HR Coordinator' },
-    { id: 6, name: 'Agus Susanto', email: 'agus@lpphotel.com', property: 'LPP Hotel Group', department: 'Accounting Department', level: 'Managerial', position: 'Chief Accounting' },
-    { id: 7, name: 'Eko Prasetyo', email: 'eko@lpphotel.com', property: 'LPP Hotel Group', department: '-', level: 'GM', position: 'General Manager' }
-  ]);
-
-  const [currentUser] = useState(employees[0]); // Budi Santoso - Staff
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [groups, setGroups] = useState([]);
+  const [activePeriod, setActivePeriod] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
-  // Simulate completed assessments
-  const [completedAssessments] = useState([1]); // Only self-assessment completed
+  const allTargets = useMemo(() => {
+    // Flatten groups to targets for list rendering compatibility
+    return groups.flatMap(g => (g.users || []).map(u => ({
+      ...u,
+      category: (g.group_name || '').toLowerCase(),
+      group_id: g.group_id,
+      group_name: g.group_name
+    })));
+  }, [groups]);
 
-  const assessmentTargets = getAssessmentTargets(currentUser, employees);
-  const progress = getAssessmentProgress(currentUser, completedAssessments, employees);
+  const currentUser = null; // User rules section kept but data deferred; can wire later
 
-  const allTargets = [
-    ...assessmentTargets.self.map(emp => ({ ...emp, category: 'self' })),
-    ...assessmentTargets.peer.map(emp => ({ ...emp, category: 'peer' })),
-    ...assessmentTargets.subordinates.map(emp => ({ ...emp, category: 'subordinate' })),
-    ...assessmentTargets.supervisor.map(emp => ({ ...emp, category: 'supervisor' })),
-    ...assessmentTargets.managerial.map(emp => ({ ...emp, category: 'managerial' })),
-    ...assessmentTargets.gm.map(emp => ({ ...emp, category: 'gm' }))
-  ];
+  const fetchData = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const [periodRes, groupsRes] = await Promise.all([
+        getActivePeriod(),
+        getAssessmentGroupMapping(),
+      ]);
+      setActivePeriod(periodRes?.data || periodRes || null);
+      setGroups(groupsRes?.data || []);
+    } catch (e) {
+      setError(e?.message || 'Gagal memuat data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleViewDetail = (employee) => {
     setSelectedEmployee(employee);
@@ -47,8 +61,11 @@ const AssessmentPage = () => {
   };
 
   const handleStartAssessment = (employee) => {
-    alert(`Mulai penilaian untuk: ${employee.name}`);
-    // Navigate to assessment form
+    const periodId = derivePeriodId(activePeriod);
+    const raw = employee?.group_name || employee?.category || '';
+    const type = String(raw).toLowerCase();
+    // Route uses query params in current implementation
+    router.push(`/assessment/${periodId}?type=${type}&targetId=${employee.id}`);
   };
 
   const getCategoryInfo = (categoryId) => {
@@ -63,41 +80,32 @@ const AssessmentPage = () => {
     <div>
       <PageHeader
         title="My Assessment"
-        subtitle={`Hai ${currentUser.name}, berikut adalah daftar penilaian yang harus Anda selesaikan`}
+        subtitle={`Hai ${currentUser?.name || 'User'}, berikut adalah daftar penilaian yang harus Anda selesaikan`}
       />
 
       <div className="p-8 space-y-8">
-        {/* Progress Overview */}
+        {loading && (
+          <div className="p-4 mb-4 text-sm bg-gray-100 rounded animate-pulse">Memuat data penilaian...</div>
+        )}
+        {error && !loading && (
+          <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 border border-red-200 rounded">
+            Gagal memuat data: {error}
+            <div className="mt-2">
+              <Button size="sm" variant="outline" onClick={fetchData}>Coba Lagi</Button>
+            </div>
+          </div>
+        )}
+        {/* Period Info */}
         <Card className="shadow-sm">
           <div className="p-6">
             <div className="flex items-center justify-between mb-2">
               <div>
-                <h3 className="text-lg font-bold">Assessment Progress</h3>
-                <p className="text-sm text-base-content/60">Periode: Semester 2 - 2024</p>
+                <h3 className="text-lg font-bold">Informasi Periode</h3>
+                <p className="text-sm text-base-content/60">Periode: {activePeriod?.name || 'Aktif'}</p>
               </div>
               <div className="text-right">
-                <p className="text-4xl font-bold text-emerald-600">{progress.percentage}%</p>
-                <p className="text-sm text-base-content/60">Completed</p>
+                <Badge variant="secondary" className="text-sm">{activePeriod?.status || 'Berjalan'}</Badge>
               </div>
-            </div>
-
-            <Progress value={progress.percentage} />
-
-            <div className="flex items-center justify-between mt-3">
-              <p className="text-sm text-base-content/60">
-                {progress.completed} dari {progress.total} penilaian selesai
-              </p>
-              {progress.isComplete ? (
-                <Badge variant="success" className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4" />
-                  Complete
-                </Badge>
-              ) : (
-                <Badge variant="warning" className="flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4" />
-                  {progress.remaining} tersisa
-                </Badge>
-              )}
             </div>
           </div>
         </Card>
@@ -105,47 +113,49 @@ const AssessmentPage = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-4 gap-6">
           <StatCard 
-            title="Total Penilaian" 
-            value={progress.total} 
+            title="Total Group" 
+            value={groups.length} 
             icon={ClipboardList}
           />
           <StatCard 
-            title="Selesai" 
-            value={progress.completed} 
-            icon={CheckCircle}
+            title="Total Target" 
+            value={allTargets.length} 
+            icon={Users}
+            valueColor="text-sky-600"
+          />
+          <StatCard 
+            title="Periode" 
+            value={activePeriod?.name || '-'} 
+            icon={Calendar}
             valueColor="text-emerald-600"
           />
           <StatCard 
-            title="Tersisa" 
-            value={progress.remaining} 
-            icon={AlertCircle}
+            title="Status" 
+            value={activePeriod?.status || 'Berjalan'} 
+            icon={TrendingUp}
             valueColor="text-amber-600"
-          />
-          <StatCard 
-            title="Target Deadline" 
-            value="7 Hari" 
-            icon={Calendar}
-            valueColor="text-sky-600"
           />
         </div>
 
         {/* Assessment Categories Summary */}
         <div className="p-6 bg-white border border-gray-200 rounded-xl">
-          <h3 className="mb-4 text-lg font-bold text-gray-900">Kategori Penilaian</h3>
+          <h3 className="mb-4 text-lg font-bold text-gray-900">Group Penilaian</h3>
           <div className="grid grid-cols-3 gap-4">
-            {assessmentCategories.map(category => {
-              const count = getCategoryCount(category.id);
-              if (count === 0) return null;
-              
+            {groups.map((group, idx) => {
+              const name = group.group_name || '-';
+              const typeKey = String(name).toLowerCase();
+              const catInfo = assessmentCategories.find(cat => cat.id === typeKey);
+              const colorClass = catInfo?.color || '';
+              const count = (group.users || []).length;
               return (
-                <div key={category.id} className="p-4 border border-gray-200 rounded-lg">
+                <div key={idx} className="p-4 border border-gray-200 rounded-lg">
                   <div className="flex items-center justify-between mb-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${category.color}`}>
-                      {category.name}
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${colorClass}`}>
+                      {name}
                     </span>
                     <span className="text-2xl font-bold text-gray-900">{count}</span>
                   </div>
-                  <p className="text-xs text-gray-500">penilaian</p>
+                  <p className="text-xs text-gray-500">target</p>
                 </div>
               );
             })}
@@ -164,7 +174,7 @@ const AssessmentPage = () => {
           <div className="divide-y divide-gray-200">
             {allTargets.map((target, index) => {
               const categoryInfo = getCategoryInfo(target.category);
-              const isCompleted = completedAssessments.includes(target.id);
+              const isCompleted = false; // progress removed per request
 
               return (
                 <div key={index} className="p-4 rounded-lg hover:bg-gray-50">
@@ -189,30 +199,23 @@ const AssessmentPage = () => {
                           )}
                         </div>
                         <div className="flex items-center space-x-4 text-sm text-base-content/60">
-                          <span>{target.position}</span>
+                          <span>{target.role || '-'}</span>
                           <span>•</span>
-                          <span>{target.department}</span>
+                          <span>{target.department || '-'}</span>
                           <span>•</span>
-                          <span>{target.property}</span>
+                          <span>{target.property || '-'}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Actions */}
                     <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="sm" onClick={() => handleViewDetail(target)}>
+                      <Button variant="ghost" size="sm" onClick={() => handleViewDetail(target)} className="hidden">
                         <Eye className="w-4 h-4 mr-2" /> Detail
                       </Button>
-                      {!isCompleted && (
-                        <Button variant="primary" size="sm" onClick={() => handleStartAssessment(target)}>
-                          <ClipboardList className="w-4 h-4 mr-2" /> Mulai Penilaian
-                        </Button>
-                      )}
-                      {isCompleted && (
-                        <Button variant="outline" size="sm" onClick={() => handleStartAssessment(target)}>
-                          <Eye className="w-4 h-4 mr-2" /> Lihat Hasil
-                        </Button>
-                      )}
+                      <Button variant="primary" size="sm" onClick={() => handleStartAssessment(target)}>
+                        <ClipboardList className="w-4 h-4 mr-2" /> Mulai Penilaian
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -223,48 +226,16 @@ const AssessmentPage = () => {
 
         {/* Assessment Rules Info */}
         <div className="p-6 border-l-4 border-emerald-500 bg-emerald-50 rounded-xl">
-          <h4 className="mb-2 font-bold text-gray-900">Aturan Penilaian untuk Level {currentUser.level}:</h4>
+          <h4 className="mb-2 font-bold text-gray-900">Aturan Penilaian</h4>
           <ul className="space-y-2 text-sm text-gray-700">
-            {currentUser.level === 'Staff' && (
-              <>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-emerald-600" />
-                  <span>Menilai diri sendiri</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-emerald-600" />
-                  <span>Menilai rekan kerja dalam 1 department yang sama</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-emerald-600" />
-                  <span>Menilai atasan langsung (Supervisor department)</span>
-                </li>
-              </>
-            )}
-            {(currentUser.level === 'Leader' || currentUser.level === 'Supervisor') && (
-              <>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-emerald-600" />
-                  <span>Menilai diri sendiri</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-emerald-600" />
-                  <span>Menilai supervisor lain di property yang sama</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-emerald-600" />
-                  <span>Menilai staff di bawahnya (dalam department yang sama)</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-emerald-600" />
-                  <span>Menilai Managerial (HR Coordinator, Chief Accounting, Sales Marketing Manager)</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-emerald-600" />
-                  <span>Menilai General Manager</span>
-                </li>
-              </>
-            )}
+            <li className="flex items-start space-x-2">
+              <CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-emerald-600" />
+              <span>Isi penilaian untuk setiap target pada group terkait</span>
+            </li>
+            <li className="flex items-start space-x-2">
+              <CheckCircle className="flex-shrink-0 w-5 h-5 mt-0.5 text-emerald-600" />
+              <span>Data pertanyaan akan ditambahkan kemudian</span>
+            </li>
           </ul>
         </div>
       </div>

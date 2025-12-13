@@ -1,8 +1,12 @@
 {
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
+  "/assessment/[periodId]/[type]/[targetId]/page": "/assessment/[periodId]/[type]/[targetId]",
+  "/assessment/[periodId]/page": "/assessment/[periodId]",
   "/assessment/page": "/assessment",
+  "/dashboard/page": "/dashboard",
   "/employees/page": "/employees",
+  "/login/page": "/login",
   "/page": "/",
   "/parameters/page": "/parameters",
   "/periods/page": "/periods",

@@ -4,7 +4,7 @@ const StatCard = ({ title, value, icon: Icon, onClick, valueColor = 'text-base-c
   return (
     <div
       onClick={onClick}
-      className={`card card-compact bg-base-100 shadow-sm border ${onClick ? 'cursor-pointer hover:shadow-lg transition' : ''}`}
+      className={`bg-white p-6 rounded-lg shadow-sm border ${onClick ? 'cursor-pointer hover:shadow-lg transition' : ''}`}
     >
       <div className="card-body">
         <div className="flex items-start justify-between">
@@ -13,7 +13,7 @@ const StatCard = ({ title, value, icon: Icon, onClick, valueColor = 'text-base-c
             <p className={`mt-2 text-3xl font-bold ${valueColor}`}>{value}</p>
           </div>
           {Icon && (
-            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary-focus shadow-md">
+            <div className="flex items-center justify-center w-12 h-12 shadow-md rounded-xl bg-gradient-to-br from-primary to-primary-focus">
               <Icon className="w-6 h-6 text-white" />
             </div>
           )}

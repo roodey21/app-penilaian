@@ -1,18 +1,13 @@
 "use client";
-import React from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Homepage from '../pages/Homepage';
 
-export default function Page() {
+export default function Home() {
   const router = useRouter();
-  const setCurrentPage = (p) => {
-    const route = p === 'dashboard' ? '/' : `/${p}`;
-    router.push(route);
-  };
+  
+  useEffect(() => {
+    router.push('/login');
+  }, [router]);
 
-  return (
-    <div>
-      <Homepage setCurrentPage={setCurrentPage} />
-    </div>
-  );
+  return null;
 }

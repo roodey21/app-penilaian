@@ -1,8 +1,12 @@
 {
   "/_global-error/page": "app/_global-error/page.js",
   "/_not-found/page": "app/_not-found/page.js",
+  "/assessment/[periodId]/[type]/[targetId]/page": "app/assessment/[periodId]/[type]/[targetId]/page.js",
+  "/assessment/[periodId]/page": "app/assessment/[periodId]/page.js",
   "/assessment/page": "app/assessment/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
   "/employees/page": "app/employees/page.js",
+  "/login/page": "app/login/page.js",
   "/page": "app/page.js",
   "/parameters/page": "app/parameters/page.js",
   "/periods/page": "app/periods/page.js",

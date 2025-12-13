@@ -19,7 +19,26 @@
     "afterFiles": [],
     "fallback": []
   },
-  "dynamicRoutes": [],
+  "dynamicRoutes": [
+    {
+      "page": "/assessment/[periodId]",
+      "regex": "^/assessment/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPperiodId": "nxtPperiodId"
+      },
+      "namedRegex": "^/assessment/(?<nxtPperiodId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/assessment/[periodId]/[type]/[targetId]",
+      "regex": "^/assessment/([^/]+?)/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPperiodId": "nxtPperiodId",
+        "nxtPtype": "nxtPtype",
+        "nxtPtargetId": "nxtPtargetId"
+      },
+      "namedRegex": "^/assessment/(?<nxtPperiodId>[^/]+?)/(?<nxtPtype>[^/]+?)/(?<nxtPtargetId>[^/]+?)(?:/)?$"
+    }
+  ],
   "staticRoutes": [
     {
       "page": "/",
@@ -46,6 +65,12 @@
       "namedRegex": "^/AssessmentPage(?:/)?$"
     },
     {
+      "page": "/dashboard",
+      "regex": "^/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
       "page": "/DashboardHome",
       "regex": "^/DashboardHome(?:/)?$",
       "routeKeys": {},
@@ -68,6 +93,12 @@
       "regex": "^/Homepage(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/Homepage(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
     },
     {
       "page": "/parameters",

@@ -85,7 +85,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$constants$2f$menuItem
 ;
 ;
 ;
-const Sidebar = ({ currentPage, onPageChange })=>{
+const Sidebar = ({ currentPage, onPageChange, onLogout, user })=>{
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("aside", {
         className: "w-64 bg-white border-r",
         children: [
@@ -190,7 +190,7 @@ const Sidebar = ({ currentPage, onPageChange })=>{
                             className: "flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-sky-500",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                 className: "text-sm font-semibold text-white",
-                                children: "SA"
+                                children: (user?.name || 'U').charAt(0)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/Sidebar.jsx",
                                 lineNumber: 44,
@@ -206,7 +206,7 @@ const Sidebar = ({ currentPage, onPageChange })=>{
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     className: "text-sm font-semibold truncate",
-                                    children: "Super Admin"
+                                    children: user?.name || 'Guest'
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/Sidebar.jsx",
                                     lineNumber: 47,
@@ -214,7 +214,7 @@ const Sidebar = ({ currentPage, onPageChange })=>{
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     className: "text-xs text-gray-500 truncate",
-                                    children: "admin@lpphotel.com"
+                                    children: user?.email || 'no-session'
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/Sidebar.jsx",
                                     lineNumber: 48,
@@ -229,6 +229,7 @@ const Sidebar = ({ currentPage, onPageChange })=>{
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                             className: "p-2 rounded-md hover:bg-gray-100",
                             "aria-label": "Logout",
+                            onClick: onLogout,
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOut$3e$__["LogOut"], {
                                 className: "w-4 h-4 text-gray-600"
                             }, void 0, false, {
@@ -280,17 +281,19 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$
 ;
 function RootLayout({ children }) {
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
+    const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["usePathname"])();
     const [currentPage, setCurrentPage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('dashboard');
+    const isAuthRoute = pathname === '/login' || pathname === '/';
     const handlePageChange = (id)=>{
         setCurrentPage(id);
-        const route = id === 'dashboard' ? '/' : `/${id}`;
+        const route = id === 'dashboard' ? '/dashboard' : `/${id}`;
         router.push(route);
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("html", {
         lang: "en",
         "data-theme": "lpp",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("body", {
-            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            children: isAuthRoute ? children : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "min-h-screen flex bg-gray-50",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$Sidebar$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -298,31 +301,31 @@ function RootLayout({ children }) {
                         onPageChange: handlePageChange
                     }, void 0, false, {
                         fileName: "[project]/src/app/layout.jsx",
-                        lineNumber: 21,
-                        columnNumber: 11
+                        lineNumber: 27,
+                        columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
                         className: "flex-1 p-6",
                         children: children
                     }, void 0, false, {
                         fileName: "[project]/src/app/layout.jsx",
-                        lineNumber: 22,
-                        columnNumber: 11
+                        lineNumber: 28,
+                        columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/layout.jsx",
-                lineNumber: 20,
-                columnNumber: 9
+                lineNumber: 26,
+                columnNumber: 11
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/layout.jsx",
-            lineNumber: 19,
+            lineNumber: 22,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/layout.jsx",
-        lineNumber: 18,
+        lineNumber: 21,
         columnNumber: 5
     }, this);
 }

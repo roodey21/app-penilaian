@@ -1,28 +1,17 @@
-"use client";
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Sidebar from '../../src/components/layout/Sidebar';
-import '../app/globals.css';
+import './globals.css';
+import React from 'react';
+import AppShell from '../components/AppShell';
+
+export const metadata = {
+  title: 'LPP 360 Survey',
+  description: '360° Best Employee Survey - LPP Hotel & MICE Group'
+};
 
 export default function RootLayout({ children }) {
-  const router = useRouter();
-  const [currentPage, setCurrentPage] = useState('dashboard');
-
-  const handlePageChange = (id) => {
-    setCurrentPage(id);
-    const route = id === 'dashboard' ? '/' : `/${id}`;
-    router.push(route);
-  };
-
   return (
     <html lang="en" data-theme="lpp">
       <body>
-        <div className="min-h-screen flex bg-gray-50">
-          <Sidebar currentPage={currentPage} onPageChange={handlePageChange} />
-          <main className="flex-1 p-6">
-            {children}
-          </main>
-        </div>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

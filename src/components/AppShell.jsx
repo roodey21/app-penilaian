@@ -14,7 +14,9 @@ export default function AppShell({ children }) {
   // Filter menu items based on manager status
   const visibleMenuItems = isManager ? menuItems : menuItems.filter(m => m.id === 'assessment');
 
-  const isGuestRoute = pathname === '/login' || pathname === '/' ;
+  // Routes that should render without the sidebar shell
+  const noShellRoutes = ['/login', '/', '/assessment/menilai'];
+  const isNoShellRoute = noShellRoutes.includes(pathname);
 
   // Redirects are now handled exclusively by pages using useAuth with requireAuth.
 
@@ -35,7 +37,7 @@ export default function AppShell({ children }) {
     return <div className="w-full h-screen flex items-center justify-center text-sm text-gray-500">Memuat...</div>;
   }
 
-  if (isGuestRoute) {
+  if (isNoShellRoute) {
     return children;
   }
 

@@ -58,7 +58,7 @@ const EmployeesPage = () => {
   };
 
   const handleDelete = (id) => {
-    if (confirm('Hapus karyawan?')) {
+    if (window.confirm('Hapus karyawan?')) {
       setEmployees(employees.filter(e => e.id !== id));
     }
   };

@@ -2,8 +2,14 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['lpphotel.com'],
-  }
+    // Use remotePatterns instead of deprecated images.domains
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lpphotel.com',
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;

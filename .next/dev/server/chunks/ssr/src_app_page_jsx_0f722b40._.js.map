@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/projects/app-penilaian/src/app/page.jsx"],"sourcesContent":["\"use client\";\r\nimport { useEffect } from 'react';\r\nimport { useRouter } from 'next/navigation';\r\n\r\nexport default function Home() {\r\n  const router = useRouter();\r\n  \r\n  useEffect(() => {\r\n    router.push('/login');\r\n  }, [router]);\r\n\r\n  return null;\r\n}\r\n"],"names":[],"mappings":";;;;AACA;AACA;AAFA;;;AAIe,SAAS;IACtB,MAAM,SAAS,IAAA,+IAAS;IAExB,IAAA,kNAAS,EAAC;QACR,OAAO,IAAI,CAAC;IACd,GAAG;QAAC;KAAO;IAEX,OAAO;AACT"}}]
-}

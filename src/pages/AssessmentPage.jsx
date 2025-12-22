@@ -65,7 +65,7 @@ const AssessmentPage = () => {
     const raw = employee?.group_name || employee?.category || '';
     const type = String(raw).toLowerCase();
     // Route uses query params in current implementation
-    router.push(`/assessment/${periodId}?type=${type}&targetId=${employee.id}`);
+    router.push(`/assessment/menilai`);
   };
 
   const getCategoryInfo = (categoryId) => {

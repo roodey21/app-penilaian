@@ -31,4 +31,76 @@ export function derivePeriodId(period) {
   return period.id || period.period_id || 'current';
 }
 
-export default { normalizeTargets, derivePeriodId };
+// Map /assessments/group-mapping response to UI groups format
+export function mapGroupMappingToUI(apiResponse) {
+  if (!apiResponse?.data || !Array.isArray(apiResponse.data)) return [];
+  
+  const groupKeyMap = {
+    'Self': 'self',
+    'Penilaian Diri Sendiri': 'self',
+    'Peer': 'peer',
+    'Penilaian Rekan Kerja': 'peer',
+    'Rekan Kerja': 'peer',
+    'Supervisor & Manajerial': 'supervisor',
+    'Supervisor': 'supervisor',
+    'Manajerial': 'supervisor',
+    'Atasan': 'atasan',
+    'Penilaian Atasan': 'atasan',
+  };
+
+  return apiResponse.data.map((group) => {
+    const groupName = group.group_name || 'Unknown';
+    const groupKey = groupKeyMap[groupName] || groupName.toLowerCase().replace(/\s+/g, '-');
+    
+    return {
+      id: groupKey,
+      label: groupName,
+      description: getGroupDescription(groupKey),
+      targets: (group.users || []).map((user) => ({
+        id: user.id,
+        name: user.name || '-',
+        role: user.level || user.position || user.department || '-',
+        email: user.email,
+        department: user.department,
+        level: user.level,
+        isCompleted: user.is_completed || false,
+        totalQuestions: user.total_questions || 0,
+        answeredQuestions: user.answered_questions || 0,
+      })),
+    };
+  });
+}
+
+function getGroupDescription(groupKey) {
+  const descriptions = {
+    self: 'Evaluasi performa Anda sendiri',
+    peer: 'Nilai rekan kerja dalam department Anda',
+    supervisor: 'Nilai supervisor dan manajer langsung',
+    atasan: 'Nilai atasan lebih tinggi',
+  };
+  return descriptions[groupKey] || 'Berikan penilaian';
+}
+
+// Map /assessments/questions response to UI sections format
+export function mapQuestionsToSections(apiResponse) {
+  if (!Array.isArray(apiResponse)) return [];
+  
+  return apiResponse
+    .filter((pillar) => pillar.is_active)
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
+    .map((pillar) => ({
+      id: pillar.key || pillar.title?.toLowerCase().replace(/\s+/g, '-') || `section-${pillar.id}`,
+      title: pillar.title || pillar.key || 'Section',
+      description: pillar.description || '',
+      questions: (pillar.questions || [])
+        .filter((q) => q.is_active)
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .map((q) => ({
+          id: q.id,
+          text: q.text || '',
+          helper: q.helper || '',
+        })),
+    }));
+}
+
+export default { normalizeTargets, derivePeriodId, mapGroupMappingToUI, mapQuestionsToSections };

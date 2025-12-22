@@ -23,7 +23,7 @@ export default function Page() {
       if (isManagerRole(roleName)) {
         router.push('/dashboard');
       } else {
-        router.push('/assessment');
+        router.push('/assessment/menilai');
       }
     } else {
       setCheckingAuth(false);
@@ -103,7 +103,7 @@ export default function Page() {
       if (isManagerRole(roleName)) {
         router.push('/dashboard');
       } else {
-        router.push('/assessment');
+        router.push('/assessment/menilai');
       }
     } catch (err) {
       setError(err.message || 'Verification failed');

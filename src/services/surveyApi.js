@@ -30,6 +30,10 @@ export const SurveyApi = {
 
   getQuestions: async () => fetchWithAuth('/engagement/questions'),
 
+  getGroupMapping: async () => fetchWithAuth('/assessments/group-mapping'),
+
+  getAssessmentQuestions: async () => fetchWithAuth('/assessments/questions'),
+
   submitAnswers: async (payload) => {
     return fetchWithAuth('/engagement/answers/bulk', {
       method: 'POST',

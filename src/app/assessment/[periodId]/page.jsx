@@ -3,72 +3,96 @@ import React, { useMemo, useState, useEffect } from 'react';
 import SurveyHeader from '../../../components/assessment/SurveyHeader';
 import SurveyTabs from '../../../components/assessment/SurveyTabs';
 import EmployeeList from '../../../components/assessment/EmployeeList';
-import AssessmentForm from '../../../components/assessment/AssessmentForm';
 import useAssessmentData from '../../../hooks/useAssessmentData';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { getAssessmentGroupMapping } from '../../../services/assessmentService';
+import { useRouter, useParams } from 'next/navigation';
 
-export default function AssessmentPeriodPage({ params }) {
+export default function AssessmentPeriodPage() {
+  const params = useParams();
   const periodId = params?.periodId;
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { currentUser, period, targets, progress, loading, error } = useAssessmentData();
   const [activeType, setActiveType] = useState('self');
-  const [activeTarget, setActiveTarget] = useState(null);
+  const [groupMapping, setGroupMapping] = useState(null);
+  const [groupLoading, setGroupLoading] = useState(true);
+  const [groupError, setGroupError] = useState(null);
 
-  // Sync state with URL search params
+  // Fetch group mapping data
   useEffect(() => {
-    const sType = searchParams.get('type');
-    const sTargetId = searchParams.get('targetId');
-    if (sType) setActiveType(sType);
-    if (sTargetId && targets.length) {
-      const found = targets.find(t => String(t.id) === String(sTargetId));
-      if (found) setActiveTarget(found);
-    }
-  }, [searchParams, targets]);
+    const fetchGroupMapping = async () => {
+      try {
+        setGroupLoading(true);
+        const response = await getAssessmentGroupMapping();
+        setGroupMapping(response?.data || response);
+        setGroupError(null);
+      } catch (err) {
+        console.error('Error fetching group mapping:', err);
+        setGroupError('Gagal memuat data grup');
+      } finally {
+        setGroupLoading(false);
+      }
+    };
 
-  // Filter targets by type
-  const filteredTargets = useMemo(() => targets.filter(t => t.category === activeType), [targets, activeType]);
+    fetchGroupMapping();
+  }, []);
+
+  // Filter targets by active group (self or peer)
+  const filteredTargets = useMemo(() => {
+    if (!groupMapping || !Array.isArray(groupMapping)) {
+      return [];
+    }
+
+    // Find the group based on activeType
+    let targetGroup = null;
+    if (activeType === 'self') {
+      targetGroup = groupMapping.find(g => g.group_name === 'Diri Sendiri');
+    } else if (activeType === 'peer') {
+      targetGroup = groupMapping.find(g => g.group_name === 'Rekan Kerja');
+    }
+
+    // Return users from the selected group
+    return targetGroup?.users || [];
+  }, [groupMapping, activeType]);
 
   // When user selects a type tab, update URL
   const handleTypeChange = (type) => {
     setActiveType(type);
-    setActiveTarget(null);
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('type', type);
-    params.delete('targetId');
-    router.replace(`?${params.toString()}`);
   };
 
-  // When user selects a target, update URL
+  // When user selects a target, navigate directly to the form page
   const handleTargetSelect = (target) => {
-    setActiveTarget(target);
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('type', activeType);
-    params.set('targetId', target.id);
-    router.replace(`?${params.toString()}`);
+    router.push(`/assessment/${periodId}/${activeType}/${target.id}`);
   };
 
-  // Back to list
-  const handleBack = () => {
-    setActiveTarget(null);
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete('targetId');
-    router.replace(`?${params.toString()}`);
-  };
+  if (loading || groupLoading) {
+    return (
+      <div className="max-w-5xl p-4 mx-auto">
+        <div className="text-center py-12">
+          <div className="inline-block animate-spin">
+            <div className="w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full"></div>
+          </div>
+          <p className="mt-4 text-gray-600">Memuat data penilaian...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl p-4 mx-auto">
+      {error && (
+        <div className="alert alert-warning mb-4">
+          <span>{error}</span>
+        </div>
+      )}
+      {groupError && (
+        <div className="alert alert-warning mb-4">
+          <span>{groupError}</span>
+        </div>
+      )}
+      
       <SurveyHeader period={period} currentUser={currentUser} progress={progress} />
       <SurveyTabs activeType={activeType} onChange={handleTypeChange} />
-      <EmployeeList targets={filteredTargets} activeTargetId={activeTarget?.id} onSelect={handleTargetSelect} />
-      {activeTarget && (
-        <AssessmentForm
-          periodId={periodId}
-          type={activeType}
-          targetId={activeTarget.id}
-          onBack={handleBack}
-        />
-      )}
+      <EmployeeList targets={filteredTargets} onSelect={handleTargetSelect} />
     </div>
   );
 }

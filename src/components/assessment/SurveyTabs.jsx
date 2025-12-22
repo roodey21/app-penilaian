@@ -2,9 +2,8 @@ import React from 'react';
 import Button from '../ui/Button';
 
 const types = [
-  { key: 'self', label: 'Penilaian Diri Sendiri' },
-  { key: 'peer', label: 'Penilaian Rekan Kerja' },
-  { key: 'manager', label: 'Penilaian Atasan' },
+  { key: 'self', label: 'Diri Sendiri' },
+  { key: 'peer', label: 'Rekan Kerja' },
 ];
 
 export default function SurveyTabs({ activeType, onChange }) {

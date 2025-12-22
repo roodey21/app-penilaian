@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Mail, ArrowRight } from 'lucide-react';
 import session from '../../utils/session';
 import { isManagerRole } from '../../constants/managerRoles';
+import { resolveUrl } from '../../utils/apiClient';
 
 export default function Page() {
   const router = useRouter();
@@ -61,9 +62,7 @@ export default function Page() {
       if (birthDate.length !== 8) {
         throw new Error('Tanggal lahir harus 8 digit (DDMMYYYY)');
       }
-      const endpoint = process.env.NEXT_PUBLIC_AUTH_API || 'https://dashboard.test/api/auth/confirm-email-dob';
-
-      const res = await fetch(endpoint, {
+      const res = await fetch(resolveUrl('/auth/confirm-email-dob'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, date_of_birth: birthDate }),
@@ -83,8 +82,8 @@ export default function Page() {
       // If role info not present, fetch it from /auth/user
       if (!userObj?.role) {
         try {
-          const roleRes = await fetch('/auth/user', {
-            headers: { 'Authorization': `Bearer ${data.token}` }
+          const roleRes = await fetch(resolveUrl('/auth/user'), {
+            headers: { Authorization: `Bearer ${data.token}` },
           });
           if (roleRes.ok) {
             const roleData = await roleRes.json();

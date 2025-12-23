@@ -10,6 +10,9 @@ const nextConfig = {
       },
     ],
   },
+  allowedDevOrigins: [
+    'http://app-penilaian.test:3000',
+  ],
 };
 
 module.exports = nextConfig;

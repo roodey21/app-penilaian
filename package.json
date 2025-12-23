@@ -11,7 +11,7 @@
         "react-dom": "^18.2.0"
     },
     "scripts": {
-        "dev": "next dev",
+        "dev": "next dev -H app-penilaian.test -p 3000",
         "build": "next build",
         "start": "next start",
         "test": "react-scripts test",

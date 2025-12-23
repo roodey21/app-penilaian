@@ -50,6 +50,8 @@ export default function AssessmentMenilaiPage() {
   const [groups, setGroups] = useState([]);
   const [sections, setSections] = useState([]);
   const [assessor, setAssessor] = useState(null);
+  const [period, setPeriod] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   const [activeCategory, setActiveCategory] = useState("");
   const [activeSection, setActiveSection] = useState("");
@@ -63,7 +65,8 @@ export default function AssessmentMenilaiPage() {
         setLoading(true);
         setError(null);
 
-        const [groupMappingRes, questionsRes] = await Promise.all([
+        const [activePeriodRes, groupMappingRes, questionsRes] = await Promise.all([
+          SurveyApi.getActivePeriod(),
           SurveyApi.getGroupMapping(),
           SurveyApi.getAssessmentQuestions(),
         ]);
@@ -101,6 +104,13 @@ export default function AssessmentMenilaiPage() {
           setAssessor({
             name: userName,
             role: userRole,
+          });
+        }
+
+        // Period info
+        if (activePeriodRes) {
+          setPeriod({
+            id: activePeriodRes.id || activePeriodRes.period_id || null,
           });
         }
 
@@ -153,6 +163,17 @@ export default function AssessmentMenilaiPage() {
     return section?.questions || [];
   }, [activeSection]);
 
+  // Build quick lookup for question -> sectionId
+  const questionToSectionMap = useMemo(() => {
+    const map = {};
+    sections.forEach((sec) => {
+      (sec.questions || []).forEach((q) => {
+        map[q.id] = sec.id;
+      });
+    });
+    return map;
+  }, [sections]);
+
   const totalQuestions = useMemo(() => {
     const perTarget = sections.reduce((acc, section) => acc + (section.questions?.length || 0), 0);
     const totalTargets = groups.reduce((acc, g) => acc + g.targets.length, 0);
@@ -187,6 +208,66 @@ export default function AssessmentMenilaiPage() {
     setAnswers((prev) => ({ ...prev, [key]: score }));
   };
 
+  // Prefill answers when switching target (fetch all answers for target+period)
+  useEffect(() => {
+    async function prefill() {
+      try {
+        if (!activeTarget || !period) return;
+        const res = await SurveyApi.getAnswers({
+          target_user_id: activeTarget.id,
+          period_id: period.id,
+        });
+        const list = Array.isArray(res?.answers) ? res.answers : Array.isArray(res) ? res : [];
+        if (!list.length) return;
+        setAnswers((prev) => {
+          const next = { ...prev };
+          list.forEach((ans) => {
+            const qid = ans.question_id || ans.id;
+            const secId = questionToSectionMap[qid];
+            if (!secId) return;
+            const key = `${activeCategory}:${activeTarget.id}:${secId}:${qid}`;
+            next[key] = ans.score;
+          });
+          return next;
+        });
+      } catch (e) {
+        // ignore prefill errors to keep UX smooth
+      }
+    }
+    prefill();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTarget?.id, period?.id]);
+
+  // Save current section answers (Plan B minimal payload)
+  async function saveCurrentSection() {
+    if (!activeTarget || !period) return;
+    const sec = sections.find((s) => s.id === activeSection);
+    if (!sec) return;
+    const sectionAnswers = (sec.questions || [])
+      .map((q) => {
+        const key = `${activeCategory}:${activeTarget.id}:${activeSection}:${q.id}`;
+        const score = answers[key];
+        if (score == null) return null;
+        return { question_id: q.id, score };
+      })
+      .filter(Boolean);
+    if (sectionAnswers.length === 0) return;
+    setSaving(true);
+    try {
+      const payload = {
+        target_user_id: activeTarget.id,
+        period_id: period.id,
+        answers: sectionAnswers,
+      };
+      await SurveyApi.submitAnswers(payload);
+    } catch (e) {
+      // optionally surface toast; keep navigation guarded by completion checks
+      console.error('Failed saving section answers', e);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   const handlePrev = () => {
     if (!activeGroup || !groups || groups.length === 0) return;
     const catIdx = groups.findIndex((g) => g.id === activeCategory);
@@ -212,7 +293,7 @@ export default function AssessmentMenilaiPage() {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!activeGroup || !groups || groups.length === 0) return;
     const catIdx = groups.findIndex((g) => g.id === activeCategory);
     const targetIdx = activeGroup.targets.findIndex((t) => t.id === activeTarget?.id);
@@ -222,12 +303,14 @@ export default function AssessmentMenilaiPage() {
     // Move within sections first, only if current section complete
     if (!isLastSection) {
       if (!isSectionComplete(activeSection)) return; // guard
+      await saveCurrentSection();
       setActiveSection(sections[currentSectionIndex + 1].id);
       return;
     }
 
     // At last section: proceed to next target/group only if all sections complete
     if (!isTargetComplete()) return; // guard
+    await saveCurrentSection();
 
     if (!isLastTargetInGroup) {
       setActiveTargetByCategory((prev) => ({ ...prev, [activeCategory]: activeGroup.targets[targetIdx + 1].id }));
@@ -243,8 +326,15 @@ export default function AssessmentMenilaiPage() {
       return;
     }
 
-    alert("Penilaian berhasil disimpan (dummy).");
-    console.log("Submitted answers", answers);
+    alert("Penilaian berhasil disimpan.");
+    // Refresh progress to update badges/completion
+    try {
+      const gm = await SurveyApi.getGroupMapping();
+      const mapped = mapGroupMappingToUI(gm);
+      if (Array.isArray(mapped) && mapped.length) {
+        setGroups(mapped);
+      }
+    } catch {}
   };
 
   // Loading state
@@ -358,7 +448,12 @@ export default function AssessmentMenilaiPage() {
                 const targetName = typeof t.name === 'string' ? t.name : String(t.name || '-');
                 const targetRole = typeof t.role === 'string' ? t.role : String(t.role || '-');
                 const isCompleted = t.isCompleted || false;
-                const answeredCount = t.answeredQuestions || 0;
+                // Derive local answered count for this target (immediate UI feedback)
+                const localAnswered = Object.keys(answers).filter((k) => {
+                  const parts = k.split(':');
+                  return parts[1] && String(parts[1]) === String(t.id);
+                }).length;
+                const answeredCount = Math.max(t.answeredQuestions || 0, localAnswered);
                 const totalCount = t.totalQuestions || 0;
                 const progressPercent = totalCount > 0 ? Math.round((answeredCount / totalCount) * 100) : 0;
                 
@@ -500,8 +595,9 @@ export default function AssessmentMenilaiPage() {
               type="button"
               onClick={handleNext}
               className={`px-5 py-3 text-sm font-semibold rounded-md shadow-sm w-1/2 sm:w-auto
-                ${!isLastSection ? (isSectionComplete(activeSection) ? "bg-amber-500 text-white hover:bg-amber-600" : "bg-amber-300 text-white cursor-not-allowed")
-                : (isTargetComplete() ? "bg-amber-500 text-white hover:bg-amber-600" : "bg-amber-300 text-white cursor-not-allowed")}`}
+                ${saving ? "bg-amber-300 text-white cursor-wait" : (!isLastSection ? (isSectionComplete(activeSection) ? "bg-amber-500 text-white hover:bg-amber-600" : "bg-amber-300 text-white cursor-not-allowed")
+                : (isTargetComplete() ? "bg-amber-500 text-white hover:bg-amber-600" : "bg-amber-300 text-white cursor-not-allowed"))}`}
+              disabled={saving}
             >
               {(() => {
                 const catIdx = groups.findIndex((g) => g.id === activeCategory);

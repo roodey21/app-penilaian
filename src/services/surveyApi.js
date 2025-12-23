@@ -40,6 +40,16 @@ export const SurveyApi = {
       body: JSON.stringify(payload),
     });
   },
+
+  // Fetch existing answers for a target and period
+  // Query params: target_user_id, period_id
+  getAnswers: async ({ target_user_id, period_id }) => {
+    const params = new URLSearchParams();
+    if (target_user_id) params.append('target_user_id', String(target_user_id));
+    if (period_id) params.append('period_id', String(period_id));
+    const qs = params.toString();
+    return fetchWithAuth(`/engagement/answers${qs ? `?${qs}` : ''}`);
+  },
 };
 
 export default SurveyApi;

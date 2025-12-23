@@ -33,12 +33,19 @@ export async function fetchWithAuth(url, options = {}) {
   const token = s?.token;
   const headers = {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
     ...(options.headers || {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
   const target = resolveUrl(url);
-  const res = await fetch(target, { ...options, headers });
+  const res = await fetch(target, {
+    ...options,
+    headers,
+    // Avoid sending cookies by default to reduce CORS requirements;
+    // set to 'include' only if your backend explicitly needs cookies.
+    credentials: 'omit'
+  });
   const contentType = res.headers.get('content-type') || '';
   const isJson = contentType.includes('application/json');
   const body = isJson ? await res.json() : await res.text();

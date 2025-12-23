@@ -15,6 +15,13 @@ const scaleLabels = {
 };
 
 function RatingScale({ value, onSelect }) {
+  const getScoreColor = (score) => {
+    if (score >= 1 && score <= 6) return 'red';      // Detractor: merah
+    if (score >= 7 && score <= 8) return 'yellow';   // Passive: kuning
+    if (score >= 9 && score <= 10) return 'green';   // Promoter: ijo
+    return 'gray';
+  };
+
   return (
     <div className="flex flex-wrap items-center gap-3 mt-4">
       <span className="hidden w-20 text-xs text-left text-gray-500 sm:block">{scaleLabels.left}</span>
@@ -22,13 +29,18 @@ function RatingScale({ value, onSelect }) {
         {Array.from({ length: 10 }).map((_, idx) => {
           const score = idx + 1;
           const active = value === score;
+          const scoreColor = getScoreColor(score);
+          const bgColorClass = scoreColor === 'red' ? 'bg-red-50' : scoreColor === 'yellow' ? 'bg-yellow-50' : 'bg-green-50';
+          const borderColorClass = scoreColor === 'red' ? 'border-red-200' : scoreColor === 'yellow' ? 'border-yellow-200' : 'border-green-200';
+          const activeBgClass = scoreColor === 'red' ? 'bg-red-600' : scoreColor === 'yellow' ? 'bg-yellow-600' : 'bg-green-600';
+          const activeBorderClass = scoreColor === 'red' ? 'border-red-600' : scoreColor === 'yellow' ? 'border-yellow-600' : 'border-green-600';
           return (
             <button
               key={score}
               type="button"
               onClick={() => onSelect(score)}
               className={`w-10 h-10 rounded-md border text-sm font-semibold transition shadow-sm
-                ${active ? "bg-emerald-600 text-white border-emerald-600" : "bg-gray-50 text-gray-700 border-gray-200 hover:border-emerald-200"}`}
+                ${active ? `${activeBgClass} text-white ${activeBorderClass}` : `${bgColorClass} text-gray-700 ${borderColorClass} hover:border-opacity-80`}`}
             >
               {score}
             </button>

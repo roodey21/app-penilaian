@@ -31,6 +31,15 @@ npm install
 npm start
 ```
 
+## 🔧 Environment
+Tambahkan file `.env.local` di root project dengan isi:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=https://your-domain.test/api
+```
+
+Next.js akan membaca file ini otomatis saat development maupun build.
+
 ## 📦 Build for Production
 ```bash
 npm run build

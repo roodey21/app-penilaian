@@ -3,6 +3,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import SurveyApi from "../../../services/surveyApi";
 import { mapGroupMappingToUI, mapQuestionsToSections } from "../../../utils/assessmentAdapter";
 import session from "../../../utils/session";
+import Textarea from "../../../components/ui/Textarea";
 
 const surveyMeta = {
   title: "360° Best Employee Survey",
@@ -92,8 +93,23 @@ export default function AssessmentMenilaiPage() {
 
         console.log('Mapped data:', { mappedGroups, mappedSections });
 
+        // Add virtual feedback section
+        const feedbackSection = {
+          id: 'kritik-saran',
+          title: 'Kritik & Saran',
+          description: 'Masukkan kritik dan saran Anda',
+          questions: [{
+            id: 'feedback-text',
+            text: 'Berikan kritik dan saran Anda untuk meningkatkan kinerja',
+            is_textarea: true,
+          }],
+          isVirtual: true,
+          order: 1.5,
+        };
+        const allSections = [...mappedSections, feedbackSection];
+
         setGroups(mappedGroups);
-        setSections(mappedSections);
+        setSections(allSections);
 
         // Set initial active states
         if (mappedGroups.length > 0) {
@@ -205,6 +221,10 @@ export default function AssessmentMenilaiPage() {
     if (!sec) return false;
     return (sec.questions || []).every((q) => {
       const key = `${activeCategory}:${activeTarget?.id}:${sectionId}:${q.id}`;
+      // For textarea questions, validate that answer is non-empty string
+      if (q.is_textarea) {
+        return answers[key] != null && String(answers[key]).trim().length > 0;
+      }
       return answers[key] != null;
     });
   };
@@ -218,6 +238,12 @@ export default function AssessmentMenilaiPage() {
     if (!activeTarget || !activeGroup) return;
     const key = `${activeCategory}:${activeTarget.id}:${activeSection}:${questionId}`;
     setAnswers((prev) => ({ ...prev, [key]: score }));
+  };
+
+  const handleFeedbackChange = (questionId, text) => {
+    if (!activeTarget || !activeGroup) return;
+    const key = `${activeCategory}:${activeTarget.id}:${activeSection}:${questionId}`;
+    setAnswers((prev) => ({ ...prev, [key]: text }));
   };
 
   // Prefill answers when switching target (fetch all answers for target+period)
@@ -238,7 +264,8 @@ export default function AssessmentMenilaiPage() {
             const secId = questionToSectionMap[qid];
             if (!secId) return;
             const key = `${activeCategory}:${activeTarget.id}:${secId}:${qid}`;
-            next[key] = ans.score;
+            // For feedback, use feedback_text; for ratings, use score
+            next[key] = ans.feedback_text || ans.score;
           });
           return next;
         });
@@ -258,9 +285,13 @@ export default function AssessmentMenilaiPage() {
     const sectionAnswers = (sec.questions || [])
       .map((q) => {
         const key = `${activeCategory}:${activeTarget.id}:${activeSection}:${q.id}`;
-        const score = answers[key];
-        if (score == null) return null;
-        return { question_id: q.id, score };
+        const value = answers[key];
+        if (value == null) return null;
+        // For textarea questions, send as feedback_text; for rating questions, send as score
+        if (q.is_textarea) {
+          return { question_id: q.id, feedback_text: value };
+        }
+        return { question_id: q.id, score: value };
       })
       .filter(Boolean);
     if (sectionAnswers.length === 0) return;
@@ -542,16 +573,22 @@ export default function AssessmentMenilaiPage() {
               {sections.map((section) => {
                 const active = activeSection === section.id;
                 const sectionTitle = typeof section.title === 'string' ? section.title : String(section.title || 'Section');
+                const isSectionFilled = isSectionComplete(section.id);
                 return (
                   <button
                     key={section.id}
                     type="button"
                     onClick={() => setActiveSection(section.id)}
-                    className={`px-3 py-2 rounded-md border text-xs font-semibold transition ${
+                    className={`px-3 py-2 rounded-md border text-xs font-semibold transition relative ${
                       active ? "bg-emerald-600 text-white border-emerald-600" : "bg-gray-50 text-gray-700 border-gray-200 hover:border-emerald-200"
-                    }`}
+                    } ${isSectionFilled && !active ? "ring-1 ring-emerald-400" : ""}`}
                   >
                     {sectionTitle}
+                    {isSectionFilled && !active && (
+                      <svg className="absolute top-1 right-1 w-3 h-3 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                      </svg>
+                    )}
                   </button>
                 );
               })}
@@ -568,7 +605,11 @@ export default function AssessmentMenilaiPage() {
                 <h2 className="text-lg font-semibold text-gray-900">
                   {sections.find((s) => s.id === activeSection)?.title || "Pertanyaan"}
                 </h2>
-                <p className="mt-1 text-xs text-gray-500">Berikan penilaian dengan skala 1-10 untuk setiap aspek</p>
+                <p className="mt-1 text-xs text-gray-500">
+                  {sections.find((s) => s.id === activeSection)?.isVirtual 
+                    ? "Masukkan kritik dan saran Anda untuk membantu peningkatan berkelanjutan" 
+                    : "Berikan penilaian dengan skala 1-10 untuk setiap aspek"}
+                </p>
               </div>
               <div className="text-xs text-gray-500">{`${activeGroup.targets.findIndex((t) => t.id === activeTarget?.id) + 1} dari ${activeGroup.targets.length}`}</div>
             </div>
@@ -580,7 +621,17 @@ export default function AssessmentMenilaiPage() {
               <div key={question.id} className="pb-6 border-b last:border-b-0 last:pb-0">
                 <div className="text-sm font-semibold text-gray-900">{question.text}</div>
                 {question.helper && <div className="mt-1 text-xs text-gray-500">{question.helper}</div>}
-                <RatingScale value={currentValue} onSelect={(score) => handleSelectScore(question.id, score)} />
+                {question.is_textarea ? (
+                  <Textarea
+                    value={currentValue || ''}
+                    onChange={(e) => handleFeedbackChange(question.id, e.target.value)}
+                    placeholder="Masukkan kritik dan saran Anda di sini..."
+                    className="mt-4 min-h-32 resize-none"
+                    maxLength={500}
+                  />
+                ) : (
+                  <RatingScale value={currentValue} onSelect={(score) => handleSelectScore(question.id, score)} />
+                )}
               </div>
             );
           })}

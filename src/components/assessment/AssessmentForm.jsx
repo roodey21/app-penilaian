@@ -26,6 +26,9 @@ export default function AssessmentForm({ periodId, type, targetId, onBack }) {
   const sections = form.sections;
   const active = sections[form.activeSectionIdx] || { label: 'General', items: [] };
 
+  // DEBUG: Verify sections array
+  console.log('Available sections:', sections.map(s => s.label));
+
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
       {/* Header */}
@@ -73,45 +76,68 @@ export default function AssessmentForm({ periodId, type, targetId, onBack }) {
         <Card>
           <div className="px-4 py-4">
             <div className="text-neutral-800 font-semibold mb-2">{active.label}</div>
-            <div className="text-sm text-neutral-500 mb-4">Berikan penilaian dengan skala 1–10 untuk setiap aspek</div>
-
-            <div className="space-y-6">
-              {active.items.map((q) => (
-                <div key={q.id} className="">
-                  <div className="text-neutral-800 mb-2">{q.text || q.title}</div>
-                  <div className="flex flex-wrap gap-2">
-                    {Array.from({ length: 10 }).map((_, i) => {
-                      const score = i + 1;
-                      const selected = form.answers[q.id] === score;
-                      return (
-                        <button
-                          key={score}
-                          onClick={() => form.setAnswer(q.id, score)}
-                          className={`w-10 h-10 flex items-center justify-center rounded-md border text-sm ${selected ? 'bg-emerald-600 border-emerald-600 text-white' : 'bg-neutral-50 border-neutral-200 text-neutral-700'}`}
-                        >
-                          {score}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <div className="text-xs text-neutral-400 mt-2">{form.answers[q.id] ? 'Terpilih' : 'Sangat Kurang'}</div>
-                </div>
-              ))}
+            <div className="text-sm text-neutral-500 mb-4">
+              {active.isCritiqueSection ? 'Berikan kritik dan saran untuk pengembangan karyawan' : 'Berikan penilaian dengan skala 1–10 untuk setiap aspek'}
             </div>
+
+            {/* Regular questions section */}
+            {!active.isCritiqueSection && (
+              <div className="space-y-6">
+                {active.items.map((q) => (
+                  <div key={q.id} className="">
+                    <div className="text-neutral-800 mb-2">{q.text || q.title}</div>
+                    <div className="flex flex-wrap gap-2">
+                      {Array.from({ length: 10 }).map((_, i) => {
+                        const score = i + 1;
+                        const selected = form.answers[q.id] === score;
+                        return (
+                          <button
+                            key={score}
+                            onClick={() => form.setAnswer(q.id, score)}
+                            className={`w-10 h-10 flex items-center justify-center rounded-md border text-sm ${selected ? 'bg-emerald-600 border-emerald-600 text-white' : 'bg-neutral-50 border-neutral-200 text-neutral-700'}`}
+                          >
+                            {score}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div className="text-xs text-neutral-400 mt-2">{form.answers[q.id] ? 'Terpilih' : 'Sangat Kurang'}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Critique section */}
+            {active.isCritiqueSection && (
+              <div className="space-y-4">
+                <textarea
+                  value={form.critique}
+                  onChange={(e) => form.setCritique(e.target.value)}
+                  placeholder={`Berikan kritik dan saran untuk ${form.target?.name || 'karyawan ini'}…`}
+                  className="w-full p-3 border border-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
+                  rows="6"
+                />
+                <div className="text-xs text-neutral-500">Kritik dan saran ini akan membantu pengembangan karir karyawan.</div>
+              </div>
+            )}
 
             {/* Footer actions */}
             <div className="flex items-center justify-between mt-8">
               <Button variant="secondary" onClick={form.prevSection}>Sebelumnya</Button>
               <div className="flex items-center gap-4">
                 <div className="w-40"><Progress value={form.progressPercent} /></div>
-                <Button onClick={form.nextSection}>Selanjutnya →</Button>
+                {!active.isCritiqueSection && (
+                  <Button onClick={form.nextSection}>Selanjutnya →</Button>
+                )}
               </div>
             </div>
 
             {/* Tips */}
-            <div className="mt-6 p-3 rounded-md bg-amber-50 text-amber-800 text-sm">
-              Tips: Berikan penilaian yang objektif dan jujur. Skor 1–6 = Detractor, 7–8 = Passive, 9–10 = Promoter.
-            </div>
+            {!active.isCritiqueSection && (
+              <div className="mt-6 p-3 rounded-md bg-amber-50 text-amber-800 text-sm">
+                Tips: Berikan penilaian yang objektif dan jujur. Skor 1–6 = Detractor, 7–8 = Passive, 9–10 = Promoter.
+              </div>
+            )}
           </div>
         </Card>
 

@@ -11,6 +11,7 @@ export default function useAssessmentForm({ periodId, type, targetId }) {
   const [target, setTarget] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({}); // key: questionId -> score
+  const [critique, setCritiqueState] = useState(''); // new: critique & suggestions
   const [activeSectionIdx, setActiveSectionIdx] = useState(0);
 
   useEffect(() => {
@@ -59,7 +60,18 @@ export default function useAssessmentForm({ periodId, type, targetId }) {
       if (!groups[key]) groups[key] = [];
       groups[key].push(q);
     }
-    return Object.keys(groups).map((label) => ({ label, items: groups[label] }));
+    const dbSections = Object.keys(groups).map((label) => ({ label, items: groups[label] }));
+    // DEBUG: log computed DB sections (labels)
+    try {
+      // avoid throwing in production if console is unavailable
+      console.log('useAssessmentForm: dbSections labels ->', dbSections.map((s) => s.label));
+    } catch (e) {}
+
+    // Add virtual "Kritik dan Saran" section at the end
+    return [
+      ...dbSections,
+      { label: 'Kritik dan Saran', items: [], isCritiqueSection: true }
+    ];
   }, [questions]);
 
   const progressPercent = useMemo(() => {
@@ -71,6 +83,10 @@ export default function useAssessmentForm({ periodId, type, targetId }) {
 
   const setAnswer = useCallback((questionId, score) => {
     setAnswers((prev) => ({ ...prev, [questionId]: score }));
+  }, []);
+
+  const setCritique = useCallback((text) => {
+    setCritiqueState(text);
   }, []);
 
   const nextSection = useCallback(() => {
@@ -87,10 +103,11 @@ export default function useAssessmentForm({ periodId, type, targetId }) {
       period_year: period?.year,
       role: target?.role || type,
       answers: Object.entries(answers).map(([question_id, score]) => ({ question_id: Number(question_id), score })),
+      critique: critique, // new: include critique
     };
     await SurveyApi.submitAnswers(payload);
     router.back();
-  }, [period, type, target, targetId, answers, router]);
+  }, [period, type, target, targetId, answers, critique, router]);
 
   return {
     loading,
@@ -102,6 +119,8 @@ export default function useAssessmentForm({ periodId, type, targetId }) {
     setActiveSectionIdx,
     answers,
     setAnswer,
+    critique,
+    setCritique,
     nextSection,
     prevSection,
     progressPercent,

@@ -9,13 +9,13 @@ const Sidebar = ({ currentPage, onPageChange, onLogout, user, items }) => {
       <div className="p-4 bg-white border-b">
         <div className="flex items-center space-x-3">
           <img
-            src="https://lpphotel.com/wp-content/uploads/2023/03/logo-lpp.png"
-            alt="LPP"
+            src="/logo-life.png"
+            alt="LIFE"
             className="object-contain w-10 h-10"
           />
           <div>
             <h1 className="text-sm font-bold">360° Best Employee Survey</h1>
-            <p className="text-xs text-base-content/60">LPP Hotel & MICE Group</p>
+            <p className="text-xs text-base-content/60">LIFE Ecosystem</p>
           </div>
         </div>
       </div>

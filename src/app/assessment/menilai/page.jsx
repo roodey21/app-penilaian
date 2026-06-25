@@ -7,7 +7,7 @@ import Textarea from "../../../components/ui/Textarea";
 
 const surveyMeta = {
   title: "360° Best Employee Survey",
-  organization: "LPP Hotel & MICE Group",
+  organization: "LIFE Ecosystem",
 };
 
 const scaleLabels = {

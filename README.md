@@ -1,6 +1,6 @@
-# 360° Best Employee Survey - LPP Hotel & MICE Group
+# 360° Best Employee Survey - LIFE Ecosystem
 
-Dashboard untuk mengelola survei 360° karyawan di LPP Hotel & MICE Group dengan sistem NPS (Net Promoter Score).
+Dashboard untuk mengelola survei 360° karyawan di LIFE Ecosystem dengan sistem NPS (Net Promoter Score).
 
 ## 🌟 Fitur Utama
 
@@ -45,9 +45,9 @@ Next.js akan membaca file ini otomatis saat development maupun build.
 npm run build
 ```
 
-## 🏢 About LPP Hotel & MICE Group
+## 🏢 About LIFE Ecosystem
 
-LPP Hotel & MICE Group memiliki 7 property:
+LIFE Ecosystem memiliki 7 property:
 1. LPP Garden Hotel
 2. LPP Convention Hotel
 3. LPP Planters Guesthouse
@@ -58,4 +58,4 @@ LPP Hotel & MICE Group memiliki 7 property:
 
 ## 📄 License
 
-Private - LPP Hotel & MICE Group
+Private - LIFE Ecosystem

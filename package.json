@@ -1,7 +1,7 @@
 {
     "name": "lpp-survey-360",
     "version": "1.0.0",
-    "description": "360° Best Employee Survey - LPP Hotel & MICE Group",
+    "description": "360° Best Employee Survey - LIFE Ecosystem",
     "private": true,
     "dependencies": {
         "clsx": "^2.1.1",

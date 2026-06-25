@@ -36,7 +36,7 @@ export default function AssessmentForm({ periodId, type, targetId, onBack }) {
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
             <div className="text-sm text-neutral-600">360° Best Employee Survey</div>
-            <div className="text-neutral-400 text-xs">LPP Hotel & MICE Group</div>
+            <div className="text-neutral-400 text-xs">LIFE Ecosystem</div>
           </div>
           <div className="flex items-center gap-4">
             <div className="text-sm text-neutral-700">Progress Survey</div>

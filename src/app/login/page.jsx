@@ -121,12 +121,12 @@ export default function Page() {
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <img 
-            src="https://lpphotel.com/wp-content/uploads/2023/03/logo-lpp.png" 
-            alt="LPP Logo" 
+            src="/logo-life.png" 
+            alt="LIFE Logo" 
             className="object-contain w-20 h-20 mx-auto mb-4"
           />
           <h1 className="mb-2 text-3xl font-bold text-gray-900">360° Best Employee Survey</h1>
-          <p className="text-gray-500">LPP Hotel & MICE Group</p>
+          <p className="text-gray-500">LIFE Ecosystem</p>
         </div>
 
         <div className="p-8 bg-white border border-gray-200 shadow-xl rounded-2xl">

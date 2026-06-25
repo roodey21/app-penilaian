@@ -4,7 +4,7 @@ import AppShell from '../components/AppShell';
 
 export const metadata = {
   title: 'LPP 360 Survey',
-  description: '360° Best Employee Survey - LPP Hotel & MICE Group'
+  description: '360° Best Employee Survey - LIFE Ecosystem'
 };
 
 export default function RootLayout({ children }) {

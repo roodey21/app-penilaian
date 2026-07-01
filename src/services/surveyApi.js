@@ -50,6 +50,35 @@ export const SurveyApi = {
     const qs = params.toString();
     return fetchWithAuth(`/engagement/answers${qs ? `?${qs}` : ''}`);
   },
+
+  // Fetch recap of assessments where the logged-in user is the TARGET
+  // Uses the same answers endpoint but with the current user's ID
+  getMyRecap: async ({ user_id, period_id }) => {
+    const params = new URLSearchParams();
+    if (user_id) params.append('target_user_id', String(user_id));
+    if (period_id) params.append('period_id', String(period_id));
+    const qs = params.toString();
+    return fetchWithAuth(`/engagement/answers${qs ? `?${qs}` : ''}`);
+  },
+
+  // Get recap score distribution (quantitative data)
+  getRecapScores: async ({ user_id, period_id, pillar_id }) => {
+    const params = new URLSearchParams();
+    if (user_id) params.append('user_id', String(user_id));
+    if (period_id) params.append('period_id', String(period_id));
+    if (pillar_id) params.append('pillar_id', String(pillar_id));
+    const qs = params.toString();
+    return fetchWithAuth(`/survey/recap/scores${qs ? `?${qs}` : ''}`);
+  },
+
+  // Get recap anonymous feedbacks (qualitative data)
+  getRecapFeedback: async ({ user_id, period_id }) => {
+    const params = new URLSearchParams();
+    if (user_id) params.append('user_id', String(user_id));
+    if (period_id) params.append('period_id', String(period_id));
+    const qs = params.toString();
+    return fetchWithAuth(`/survey/recap/feedback${qs ? `?${qs}` : ''}`);
+  },
 };
 
 export default SurveyApi;

@@ -227,7 +227,7 @@ export default function Page() {
                   disabled={loading}
                   className="flex items-center justify-center w-full py-3 space-x-2 font-medium text-white transition-all rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:shadow-lg hover:shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span>{loading ? 'Memverifikasi...' : 'Mulai Survey'}</span>
+                  <span>{loading ? 'Memverifikasi...' : 'SUBMIT'}</span>
                   <ArrowRight className="w-5 h-5" />
                 </button>
               </form>

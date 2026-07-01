@@ -15,7 +15,7 @@ export default function AppShell({ children }) {
   const visibleMenuItems = isManager ? menuItems : menuItems.filter(m => m.id === 'assessment');
 
   // Routes that should render without the sidebar shell
-  const noShellRoutes = ['/login', '/', '/assessment/menilai'];
+  const noShellRoutes = ['/login', '/', '/assessment/menilai', '/assessment/rekap'];
   const isNoShellRoute = noShellRoutes.includes(pathname);
 
   // Redirects are now handled exclusively by pages using useAuth with requireAuth.

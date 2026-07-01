@@ -1,9 +1,11 @@
 "use client";
 import React, { useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import SurveyApi from "../../../services/surveyApi";
 import { mapGroupMappingToUI, mapQuestionsToSections } from "../../../utils/assessmentAdapter";
 import session from "../../../utils/session";
 import Textarea from "../../../components/ui/Textarea";
+import UserNavbar from "../../../components/layout/UserNavbar";
 
 const surveyMeta = {
   title: "360° Best Employee Survey",
@@ -58,6 +60,7 @@ function RatingScale({ value, onSelect }) {
 }
 
 export default function AssessmentMenilaiPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [groups, setGroups] = useState([]);
@@ -69,6 +72,7 @@ export default function AssessmentMenilaiPage() {
   const [activeCategory, setActiveCategory] = useState("");
   const [activeSection, setActiveSection] = useState("");
   const [answers, setAnswers] = useState({});
+  const [showSuccessScreen, setShowSuccessScreen] = useState(false);
 
   // Fetch data on mount
   useEffect(() => {
@@ -369,7 +373,7 @@ export default function AssessmentMenilaiPage() {
       return;
     }
 
-    alert("Penilaian berhasil disimpan.");
+    setShowSuccessScreen(true);
     // Refresh progress to update badges/completion
     try {
       const gm = await SurveyApi.getGroupMapping();
@@ -383,10 +387,13 @@ export default function AssessmentMenilaiPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center">
-          <div className="mb-2 text-gray-500">Memuat data penilaian...</div>
-          <div className="w-16 h-16 mx-auto border-4 rounded-full border-emerald-200 border-t-emerald-600 animate-spin"></div>
+      <div className="min-h-screen bg-gray-50">
+        <UserNavbar />
+        <div className="flex items-center justify-center py-32">
+          <div className="text-center">
+            <div className="mb-2 text-gray-500">Memuat data penilaian...</div>
+            <div className="w-16 h-16 mx-auto border-4 rounded-full border-emerald-200 border-t-emerald-600 animate-spin"></div>
+          </div>
         </div>
       </div>
     );
@@ -395,28 +402,19 @@ export default function AssessmentMenilaiPage() {
   // Error state
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="max-w-md p-6 bg-white border border-red-100 shadow-sm rounded-xl">
-          <div className="mb-2 font-semibold text-red-600">Gagal memuat data</div>
-          <div className="mb-4 text-sm text-gray-600">{error?.message || "Terjadi kesalahan"}</div>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 text-sm text-white rounded-md bg-emerald-600 hover:bg-emerald-700"
-          >
-            Muat Ulang
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // No data state
-  if (!loading && !error && (groups.length === 0 || sections.length === 0)) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="max-w-md p-6 bg-white border border-gray-100 shadow-sm rounded-xl">
-          <div className="mb-2 font-semibold text-gray-900">Tidak ada data penilaian</div>
-          <div className="text-sm text-gray-600">Silakan hubungi administrator untuk informasi lebih lanjut.</div>
+      <div className="min-h-screen bg-gray-50">
+        <UserNavbar />
+        <div className="flex items-center justify-center py-32">
+          <div className="max-w-md p-6 bg-white border border-red-100 shadow-sm rounded-xl">
+            <div className="mb-2 font-semibold text-red-600">Gagal memuat data</div>
+            <div className="mb-4 text-sm text-gray-600">{error?.message || "Terjadi kesalahan"}</div>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 text-sm text-white rounded-md bg-emerald-600 hover:bg-emerald-700"
+            >
+              Muat Ulang
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -427,8 +425,49 @@ export default function AssessmentMenilaiPage() {
     return null;
   }
 
+  if (showSuccessScreen) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <UserNavbar />
+        <div className="max-w-xl mx-auto px-4 py-16">
+          <div className="p-8 bg-white border border-gray-150 shadow-md rounded-2xl text-center space-y-6">
+            <div className="flex items-center justify-center w-16 h-16 mx-auto rounded-full bg-emerald-50 border border-emerald-250 shadow-inner">
+              <svg className="w-8 h-8 text-emerald-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold text-gray-900">Penilaian Berhasil Disimpan!</h2>
+              <p className="text-sm text-gray-500 leading-relaxed">
+                Terima kasih telah mengisi survei dan tetap semangat dalam memberikan kinerja maksimalnya.
+              </p>
+            </div>
+
+            <div className="border-t border-gray-100 pt-6 flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => router.push("/assessment/rekap")}
+                className="px-5 py-2.5 text-xs font-semibold text-white bg-[#0d9488] rounded-lg hover:bg-teal-700 transition shadow-sm"
+              >
+                Lihat Rekap Penilaian
+              </button>
+              <button
+                onClick={() => setShowSuccessScreen(false)}
+                className="px-5 py-2.5 text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-gray-255 rounded-lg transition border border-gray-200"
+              >
+                Tinjau Ulang Jawaban
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-6xl mx-auto space-y-4">
+    <div className="min-h-screen bg-gray-50">
+      <UserNavbar />
+      <div className="max-w-6xl px-4 py-4 mx-auto space-y-4">
       <div className="p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div className="flex items-start gap-3">
@@ -675,6 +714,7 @@ export default function AssessmentMenilaiPage() {
           </div>
         </div>          </>
         )}      </div>
+      </div>
     </div>
   );
 }
